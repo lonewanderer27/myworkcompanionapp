@@ -81,7 +81,7 @@ export default function CompanyCreateScreen() {
         <Input
           multiline
           label="Company Description"
-          numberOfLines={3}
+          numberOfLines={6}
           value={values.description}
           onChangeText={handleChange("description")}
           onBlur={handleBlur("description")}

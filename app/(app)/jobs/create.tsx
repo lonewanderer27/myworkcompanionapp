@@ -154,7 +154,7 @@ export default function JobCreateScreen() {
         <Input
           multiline
           label="Job Description"
-          numberOfLines={3}
+          numberOfLines={6}
           value={values.description}
           onChangeText={handleChange("description")}
           onBlur={handleBlur("description")}
