@@ -1,6 +1,6 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { Button, IndexPath, Input, Select, SelectItem, Text } from "@ui-kitten/components";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { View } from "react-native";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -9,8 +9,11 @@ import companies from "@/db/schema/companies";
 import { useMemo } from "react";
 import useLocations from "@/hooks/useLocations";
 import useCompanies from "@/hooks/useCompanies";
+import useJobs from "@/hooks/useJobs";
 
 export default function JobCreateScreen() {
+  const jobsData = useJobs();
+
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setFieldValue } = useFormik<{
     name: string,
     companyId?: number,
@@ -34,11 +37,18 @@ export default function JobCreateScreen() {
       workMode: undefined
     },
     onSubmit: async (data, { setSubmitting }) => {
+      // submit our data
       setSubmitting(true);
       console.log(data)
       const res = await db.insert(companies).values(data);
       console.log(res);
       setSubmitting(false);
+
+      // refetch our database
+      jobsData.refetch();
+
+      // go back to the previous screen
+      router.canGoBack() ? router.back() : null;
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Job role is a required field"),
@@ -65,8 +75,8 @@ export default function JobCreateScreen() {
         return undefined
       }
       return new IndexPath(values.workMode!);
-    }, 
-  [values.workMode]);
+    },
+    [values.workMode]);
 
   const handleWorkModeOnSelect = (index: IndexPath) => {
     setFieldValue("workMode", index.row!);
@@ -77,7 +87,7 @@ export default function JobCreateScreen() {
 
   const locationIdVal = useMemo(() => {
     // find the location object based on the ID
-    const locObj =  locationsData.data?.find(loc => loc.id === values.locationId);
+    const locObj = locationsData.data?.find(loc => loc.id === values.locationId);
     if (locObj == undefined) return "";
     return locObj?.city;
   }, [values.locationId])
@@ -86,13 +96,13 @@ export default function JobCreateScreen() {
     () => {
       if (values.locationId == undefined) return undefined;
       return new IndexPath(values.locationId!);
-    }, 
-  [values.locationId])
+    },
+    [values.locationId])
 
   const handleLocationIdOnSelect = (index: IndexPath) => {
     // find the location object based on the index
-    const locObj =  locationsData.data?.[index.row]!;
-    
+    const locObj = locationsData.data?.[index.row]!;
+
     setFieldValue("locationId", locObj.id);
   }
 
@@ -100,7 +110,7 @@ export default function JobCreateScreen() {
 
   const companyIdVal = useMemo(() => {
     // find the company object based on the ID
-    const companyObj =  companiesData.data?.find(loc => loc.id === values.companyId);
+    const companyObj = companiesData.data?.find(loc => loc.id === values.companyId);
     if (companyObj == undefined) return "";
     return companyObj?.name ?? companyObj.fullName;
   }, [values.companyId])
@@ -109,16 +119,16 @@ export default function JobCreateScreen() {
     () => {
       if (values.companyId == undefined) return undefined;
       return new IndexPath(values.companyId!);
-    }, 
-  [values.companyId])
+    },
+    [values.companyId])
 
   const handleCompanyIdOnSelect = (index: IndexPath) => {
     // find the company object based on the index
-    const companyObj =  companiesData.data?.[index.row]!;
-    
+    const companyObj = companiesData.data?.[index.row]!;
+
     setFieldValue("companyId", companyObj.id);
   }
-  
+
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
       <Stack.Screen

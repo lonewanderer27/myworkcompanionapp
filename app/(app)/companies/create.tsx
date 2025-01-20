@@ -1,13 +1,16 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { Button, Input, Text } from "@ui-kitten/components";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { View } from "react-native";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { db } from "@/app/_layout";
 import companies from "@/db/schema/companies";
+import useCompanies from "@/hooks/useCompanies";
 
 export default function CompanyCreateScreen() {
+  const companiesData = useCompanies();
+
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting } = useFormik<{
     name: string,
     fullName?: string,
@@ -19,11 +22,18 @@ export default function CompanyCreateScreen() {
       name: ""
     },
     onSubmit: async (data, { setSubmitting }) => {
+      // submit new company
       setSubmitting(true);
       console.log(data)
       const res = await db.insert(companies).values(data);
       console.log(res);
       setSubmitting(false);
+
+      // refresh our database
+      companiesData.refetch();
+
+      // go back to the previous screen
+      router.canGoBack() ? router.back() : null;
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Company name is a required field"),
