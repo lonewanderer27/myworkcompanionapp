@@ -1,0 +1,1 @@
+ALTER TABLE `job_applications` ADD `work_mode` text;

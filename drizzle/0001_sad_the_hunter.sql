@@ -1,0 +1,1 @@
+ALTER TABLE `job_applications` ADD `name` text NOT NULL;
