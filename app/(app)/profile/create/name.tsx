@@ -80,10 +80,7 @@ export default function CreateNameProfileScreen() {
       </View>
       <View style={{ marginVertical: 50 }}>
         <Button onPress={() => handleSubmit()} disabled={isSubmitting}>
-          <>
-            {isSubmitting && <ActivityIndicator />}
-            Next
-          </>
+          Next
         </Button>
       </View>
     </ThemedScrollView>
