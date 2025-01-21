@@ -59,7 +59,7 @@ export default function CompanyCreateScreen() {
       </Text>
       <View style={{ marginTop: 20 }}>
         <Input
-          label="Company Name"
+          label="Name"
           value={values.name}
           onChangeText={handleChange("name")}
           onBlur={handleBlur("name")}
@@ -69,7 +69,7 @@ export default function CompanyCreateScreen() {
       </View>
       <View style={{ marginTop: 20 }}>
         <Input
-          label="Full Company Name"
+          label="Full Name"
           value={values.fullName}
           onChangeText={handleChange("fullName")}
           onBlur={handleBlur("fullName")}
@@ -80,7 +80,7 @@ export default function CompanyCreateScreen() {
       <View style={{ marginTop: 20 }}>
         <Input
           multiline
-          label="Company Description"
+          label="Description"
           numberOfLines={6}
           value={values.description}
           onChangeText={handleChange("description")}
@@ -91,7 +91,7 @@ export default function CompanyCreateScreen() {
       </View>
       <View style={{ marginTop: 20 }}>
         <Input
-          label="Company Website"
+          label="Website"
           value={values.website}
           onChangeText={handleChange("website")}
           onBlur={handleBlur("website")}
