@@ -102,7 +102,6 @@ export default function JobCreateScreen() {
   const handleLocationIdOnSelect = (index: IndexPath) => {
     // find the location object based on the index
     const locObj = locationsData.data?.[index.row]!;
-
     setFieldValue("locationId", locObj.id);
   }
 
@@ -125,7 +124,6 @@ export default function JobCreateScreen() {
   const handleCompanyIdOnSelect = (index: IndexPath) => {
     // find the company object based on the index
     const companyObj = companiesData.data?.[index.row]!;
-
     setFieldValue("companyId", companyObj.id);
   }
 
@@ -175,7 +173,7 @@ export default function JobCreateScreen() {
           onSelect={handleCompanyIdOnSelect}
         >
           {companiesData.data?.map(lc => (
-            <SelectItem title={lc.name ?? lc.fullName} />
+            <SelectItem key={lc.id} title={lc.name ?? lc.fullName} />
           ))}
         </Select>
       </View>
@@ -209,7 +207,7 @@ export default function JobCreateScreen() {
           onSelect={handleLocationIdOnSelect}
         >
           {locationsData.data?.map(lc => (
-            <SelectItem title={lc.city} />
+            <SelectItem key={lc.id} title={lc.city} />
           ))}
         </Select>
       </View>
