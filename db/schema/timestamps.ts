@@ -9,7 +9,8 @@ const timestamps = {
   updatedAt: t
     .text("updated_at")
     .notNull()
-    .default(sql`(current_timestamp)`),
+    .default(sql`(current_timestamp)`)
+    .$onUpdateFn(() => sql`(CURRENT_TIMESTAMP)`),
   deletedAt: t.text("deleted_at")
 };
 

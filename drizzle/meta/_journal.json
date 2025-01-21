@@ -22,6 +22,27 @@
       "when": 1737299103874,
       "tag": "0002_colorful_celestials",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1737436792287,
+      "tag": "0003_icy_domino",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1737436855011,
+      "tag": "0004_condemned_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1737438431401,
+      "tag": "0005_mysterious_joseph",
+      "breakpoints": true
     }
   ]
 }

@@ -57,7 +57,13 @@ export const expo = SQLite.openDatabaseSync('db.db');
 export const db = drizzle(expo, { schema: schema });
 
 // Instantiate our query client
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      experimental_prefetchInRender: true,
+    },
+  },
+});
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

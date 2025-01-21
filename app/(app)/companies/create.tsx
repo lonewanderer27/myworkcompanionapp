@@ -1,12 +1,13 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { router, Stack } from "expo-router";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { db } from "@/app/_layout";
 import companies from "@/db/schema/companies";
 import useCompanies from "@/hooks/useCompanies";
+import React from "react";
 
 export default function CompanyCreateScreen() {
   const companiesData = useCompanies();
@@ -111,7 +112,10 @@ export default function CompanyCreateScreen() {
       </View>
       <View style={{ marginTop: 50 }}>
         <Button onPress={() => handleSubmit()} disabled={isSubmitting}>
-          Save
+          <>
+            {isSubmitting && <ActivityIndicator />}
+            Next
+          </>
         </Button>
       </View>
     </ThemedScrollView>
