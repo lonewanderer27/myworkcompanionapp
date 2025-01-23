@@ -35,8 +35,8 @@ export default function ReviewProfileScreen() {
       <Text category="h4" style={{ marginBottom: 20 }}>
         Review Changes
       </Text>
-      {existingSession?.data && Object.entries(existingSession.data).filter(os => os[1] !== "").map(([key, value]) =>
-        <View style={{ marginBottom: 17 }}>
+      {existingSession?.data && Object.entries(existingSession.data).filter(os => os[1] !== "").map(([key, value], index) =>
+        <View style={{ marginBottom: 17 }} key={index}>
           <Text category="label">{changeCase.capitalCase(key)}</Text>
           <TouchableOpacity>
             <Text
