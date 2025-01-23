@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@ui-kitten/components';
 import { router } from 'expo-router';
@@ -42,19 +42,39 @@ export default function TabProfileScreen() {
     router.push("/(app)/profile/create/name");
   }
 
+  const alertNoSession = () => {
+    Alert.alert('Session Error', 'No existing session found. Please create a new session profile.');
+  };
+
   const handleSetProfileName = () => {
+    if (!existingSession) {
+      alertNoSession();
+      return;
+    }
     router.push("/(app)/profile/create/name");
   };
 
   const handleSetProfileDesc = () => {
+    if (!existingSession) {
+      alertNoSession();
+      return;
+    }
     router.push("/(app)/profile/create/description");
   }
 
   const handleSetProfileContact = () => {
+    if (!existingSession) {
+      alertNoSession();
+      return;
+    }
     router.push("/(app)/profile/create/contact");
   }
 
   const handleReviewProfile = () => {
+    if (!existingSession) {
+      alertNoSession();
+      return;
+    }
     router.push("/(app)/profile/create/review");
   }
 
@@ -64,7 +84,7 @@ export default function TabProfileScreen() {
         Update Profile
       </Button>
       <Button size="large" onPress={createSessionProfile} style={{ marginTop: 20 }}>
-        Force create new Profile
+        Force create new Session Profile
       </Button>
       <Button size="large" onPress={handleSetProfileName} style={{ marginTop: 20 }}>
         Set Name

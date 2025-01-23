@@ -3,9 +3,9 @@ import { ThemedScrollView } from "@/components/ThemedScrollView";
 import profileSessions from "@/db/schema/profileSessions";
 import useSessionProfile from "@/hooks/useSessionProfile";
 import SessionProfileDataType from "@/types/SessionProfileType";
-import { Button, Input } from "@ui-kitten/components";
+import { Button, Input, Text } from "@ui-kitten/components";
 import { eq } from "drizzle-orm";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import * as Yup from "yup";
@@ -60,6 +60,15 @@ export default function CreateDescriptionProfileScreen() {
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
+      <Stack.Screen
+        options={{ headerTitle: "", headerShadowVisible: false }}
+      />
+      <Text category="h4">
+        Tell us about yourself
+      </Text>
+      <Text category="label">
+        Step 2 out 3
+      </Text>
       <View style={{ marginTop: 20 }}>
         <Input
           label="Career Profile"

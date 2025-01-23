@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import * as changeCase from "change-case";
+import { Stack } from "expo-router";
 
 export default function ReviewProfileScreen() {
   const { refetch, existingSession } = useSessionProfile();
@@ -28,6 +29,9 @@ export default function ReviewProfileScreen() {
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
+      <Stack.Screen
+        options={{ headerTitle: "", headerShadowVisible: false }}
+      />
       <Text category="h4" style={{ marginBottom: 20 }}>
         Review Changes
       </Text>
@@ -39,16 +43,16 @@ export default function ReviewProfileScreen() {
               style={{
                 borderColor: "gray",
                 borderWidth: 1,
-                padding: 7,
+                padding: 12,
                 borderRadius: 5,
-                marginTop: 5
-              }}>
+                marginTop: 5,
+                lineHeight: 20
+              }} category="p">
               {value}
             </Text>
           </TouchableOpacity>
-
         </View>)}
-      <View style={{ paddingBottom: 60 }}>
+      <View style={{ paddingVertical: 30 }}>
         <Button size="large" onPress={handleCompleteSessionProfile}>
           Save Changes
         </Button>
