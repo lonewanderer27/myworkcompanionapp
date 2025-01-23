@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { Button } from '@ui-kitten/components';
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedScrollView } from '@/components/ThemedScrollView';
 
 export default function TabJobsScreen() {
   const handleCreateCompany = () => {
@@ -15,19 +16,26 @@ export default function TabJobsScreen() {
   const handleCreateLocations = () => {
     router.push('/(app)/locations/create')
   }
+  
+  const handleViewCompanies = () => {
+    router.push("/(app)/companies")
+  }
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedScrollView style={styles.container}>
       <Button size="large" onPress={handleCreateLocations} style={{ marginTop: 20 }}>
         Add Locations
       </Button>
       <Button size="large" onPress={handleCreateCompany} style={{ marginTop: 20 }}>
         Add Company
       </Button>
+      <Button size="large" onPress={handleViewCompanies} style={{ marginTop: 20 }}>
+        View Companies
+      </Button>
       <Button size="large" onPress={handleCreateJob} style={{ marginTop: 20 }}>
         Add Job
       </Button>
-    </ThemedView>
+    </ThemedScrollView>
   );
 }
 

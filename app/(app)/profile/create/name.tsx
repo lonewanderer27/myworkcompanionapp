@@ -5,25 +5,26 @@ import useSessionProfile from "@/hooks/useSessionProfile";
 import SessionProfileDataType from "@/types/SessionProfileType";
 import { Button, Input } from "@ui-kitten/components";
 import { eq } from "drizzle-orm";
+import { router } from "expo-router";
 import { useFormik } from "formik";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import * as Yup from "yup";
 
 export default function CreateNameProfileScreen() {
-  const profileSession = useSessionProfile();
+  const { existingSession } = useSessionProfile();
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting } = useFormik<{
     name: string,
     fullName: string
   }>({
     initialValues: {
-      name: profileSession.data?.at(-1)?.data.name ?? "",
-      fullName: profileSession.data?.at(-1)?.data.fullName ?? ""
+      name: existingSession?.data.name ?? "",
+      fullName: existingSession?.data.fullName ?? ""
     },
     onSubmit: async (data, { setSubmitting }) => {
       setSubmitting(true);
-      const prev = profileSession.data?.at(-1)?.data;
+      const prev = existingSession?.data;
       if (!data) {
         console.error("No active profile session!")
         return;
@@ -38,10 +39,13 @@ export default function CreateNameProfileScreen() {
         // replace the data column in the session profile
         const res = await db.update(profileSessions)
           .set({ data: JSON.stringify(newData) })
-          .where(eq(profileSessions.id, profileSession.data![0].id))
+          .where(eq(profileSessions.id, existingSession!.data.id!))
           .returning();
 
         console.log("New data: ", res)
+
+        // redirect the user to the description page
+        router.push("/(app)/profile/create/description");
       } catch (err) {
         console.error(err);
       }

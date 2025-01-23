@@ -5,12 +5,13 @@ import useSessionProfile from "@/hooks/useSessionProfile";
 import SessionProfileDataType from "@/types/SessionProfileType";
 import { Button, Input } from "@ui-kitten/components";
 import { eq } from "drizzle-orm";
+import { router } from "expo-router";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import * as Yup from "yup";
 
 export default function CreateContactProfileScreen() {
-  const profileSession = useSessionProfile();
+  const { existingSession } = useSessionProfile();
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting } = useFormik<{
     contactNo: string,
@@ -22,17 +23,17 @@ export default function CreateContactProfileScreen() {
     website?: string
   }>({
     initialValues: {
-      contactNo: profileSession.data?.at(-1)?.data.contactNo ?? "",
-      email: profileSession.data?.at(-1)?.data.email ?? "",
-      github: profileSession.data?.at(-1)?.data.github ?? "",
-      gitlab: profileSession.data?.at(-1)?.data.gitlab ?? "",
-      linkedin: profileSession.data?.at(-1)?.data.linkedin ?? "",
-      twitter: profileSession.data?.at(-1)?.data.twitter ?? "",
-      website: profileSession.data?.at(-1)?.data.website ?? ""
+      contactNo: existingSession?.data.contactNo ?? "",
+      email: existingSession?.data.email ?? "",
+      github: existingSession?.data.github ?? "",
+      gitlab: existingSession?.data.gitlab ?? "",
+      linkedin: existingSession?.data.linkedin ?? "",
+      twitter: existingSession?.data.twitter ?? "",
+      website: existingSession?.data.website ?? ""
     },
     onSubmit: async (data, { setSubmitting }) => {
       setSubmitting(true);
-      const prev = profileSession.data?.at(-1)?.data;
+      const prev = existingSession?.data;
       if (!data) {
         console.error("No active profile session!")
         return;
@@ -47,10 +48,13 @@ export default function CreateContactProfileScreen() {
         // replace the data column in the session profile
         const res = await db.update(profileSessions)
           .set({ data: JSON.stringify(newData) })
-          .where(eq(profileSessions.id, profileSession.data![0].id))
+          .where(eq(profileSessions.id, existingSession!.data.id!))
           .returning();
 
         console.log("New data: ", res)
+
+        // redirect the user to the description page
+        router.push("/(app)/profile/create/review");
       } catch (err) {
         console.error(err);
       }
@@ -74,6 +78,7 @@ export default function CreateContactProfileScreen() {
           onBlur={handleBlur("contactNo")}
           status={errors.contactNo ? "danger" : undefined}
           caption={errors.contactNo}
+          keyboardType="numeric"
         />
       </View>
       <View style={{ marginTop: 20 }}>
@@ -84,6 +89,7 @@ export default function CreateContactProfileScreen() {
           onBlur={handleBlur("email")}
           status={errors.email ? "danger" : undefined}
           caption={errors.email}
+          keyboardType="email-address"
         />
       </View>
       <View style={{ marginTop: 20 }}>
@@ -124,6 +130,7 @@ export default function CreateContactProfileScreen() {
           onBlur={handleBlur("twitter")}
           status={errors.twitter ? "danger" : undefined}
           caption={errors.twitter}
+          keyboardType="twitter"
         />
       </View>
       <View style={{ marginTop: 20 }}>
@@ -134,6 +141,7 @@ export default function CreateContactProfileScreen() {
           onBlur={handleBlur("website")}
           status={errors.website ? "danger" : undefined}
           caption={errors.website}
+          keyboardType="url"
         />
       </View>
       <View style={{ marginVertical: 50 }}>

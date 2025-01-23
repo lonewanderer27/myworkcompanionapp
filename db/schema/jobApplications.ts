@@ -19,4 +19,6 @@ const jobApplications = sqliteTable('job_applications', {
   workMode: t.text("work_mode")
 })
 
+export type JobApplicationType = typeof jobApplications.$inferSelect;
+
 export default jobApplications;

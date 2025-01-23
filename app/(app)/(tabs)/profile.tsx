@@ -8,36 +8,38 @@ import DEFAULT_SESSION_PROFILE from '@/constants/SessionProfile';
 import useSessionProfile from '@/hooks/useSessionProfile';
 
 export default function TabProfileScreen() {
-  const profileSess = useSessionProfile();
+  const { hasPreviousSession, previousSession, existingSession, hasExistingSession, refetch } = useSessionProfile();
 
   const createSessionProfile = async () => {
-    console.log("Creating new profile session...")
-    await db.insert(profileSessions).values({
-      data: JSON.stringify(DEFAULT_SESSION_PROFILE)
-    });
-    await profileSess.refetch();
+    console.log("Creating new profile session...");
+
+
+    // if there is an existing session that's completed
+    // then we copy the data from that session over to the new one
+    if (hasPreviousSession) {
+      await db.insert(profileSessions).values({
+        data: JSON.stringify(previousSession!.data),
+      });
+    } else {
+      // otherwise, just create a session with default values
+      await db.insert(profileSessions).values({
+        data: JSON.stringify(DEFAULT_SESSION_PROFILE),
+      });
+    }
+
+    // refetch so we have updated data
+    await refetch();
   }
 
   const handleAddSessionProfile = async () => {
     // refetch our data
-    const res = await profileSess.refetch()
+    await refetch()
 
-    // check if the profile sessions row is empty
-    if (res.data?.length == 0) {
-      return await createSessionProfile();
-    }
-
-    // if it's not empty, then check the last row
-    // if the column: completed is false
-    if (res.data?.at(-1)?.completed == false) {
-      // if yes, warn in the log that we're going to continue
-      // where the last session left off
-      console.log("There's an existing, incomplete session. Continuing from that...")
-      console.log(res.data.at(-1)?.data)
-    } else {
-      // if no, proceed as usual, we're going to create a new session profile
+    if (!hasExistingSession) {
       await createSessionProfile();
     }
+
+    router.push("/(app)/profile/create/name");
   }
 
   const handleAddProfileName = () => {
@@ -55,7 +57,10 @@ export default function TabProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <Button size="large" onPress={handleAddSessionProfile} style={{ marginTop: 20 }}>
-        New Profile
+        Update Profile
+      </Button>
+      <Button size="large" onPress={createSessionProfile} style={{ marginTop: 20 }}>
+        Force create new Profile
       </Button>
       <Button size="large" onPress={handleAddProfileName} style={{ marginTop: 20 }}>
         Add Name

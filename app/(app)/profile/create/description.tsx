@@ -5,24 +5,25 @@ import useSessionProfile from "@/hooks/useSessionProfile";
 import SessionProfileDataType from "@/types/SessionProfileType";
 import { Button, Input } from "@ui-kitten/components";
 import { eq } from "drizzle-orm";
+import { router } from "expo-router";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import * as Yup from "yup";
 
 export default function CreateDescriptionProfileScreen() {
-  const profileSession = useSessionProfile();
+  const { existingSession } = useSessionProfile();
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting } = useFormik<{
     careerProfile: string,
     careerGoal: string
   }>({
     initialValues: {
-      careerProfile: profileSession.data?.at(-1)?.data.careerProfile ?? "",
-      careerGoal: profileSession.data?.at(-1)?.data.careerGoal ?? ""
+      careerProfile: existingSession?.data.careerProfile ?? "",
+      careerGoal: existingSession?.data.careerGoal ?? ""
     },
     onSubmit: async (data, { setSubmitting }) => {
       setSubmitting(true);
-      const prev = profileSession.data?.at(-1)?.data;
+      const prev = existingSession?.data;
       if (!data) {
         console.error("No active profile session!")
         return;
@@ -37,10 +38,14 @@ export default function CreateDescriptionProfileScreen() {
         // replace the data column in the session profile
         const res = await db.update(profileSessions)
           .set({ data: JSON.stringify(newData) })
-          .where(eq(profileSessions.id, profileSession.data![0].id))
+          .where(eq(profileSessions.id, existingSession!.data.id!))
           .returning();
 
         console.log("New data: ", res)
+
+
+        // redirect the user to the description page
+        router.push("/(app)/profile/create/contact");
       } catch (err) {
         console.error(err);
       }
@@ -63,6 +68,8 @@ export default function CreateDescriptionProfileScreen() {
           onBlur={handleBlur("careerProfile")}
           status={errors.careerProfile ? "danger" : undefined}
           caption={errors.careerProfile}
+          numberOfLines={13}
+          multiline
         />
       </View>
       <View style={{ marginTop: 20 }}>
@@ -73,6 +80,8 @@ export default function CreateDescriptionProfileScreen() {
           onBlur={handleBlur("careerGoal")}
           status={errors.careerGoal ? "danger" : undefined}
           caption={errors.careerGoal}
+          numberOfLines={13}
+          multiline
         />
       </View>
       <View style={{ marginVertical: 50 }}>

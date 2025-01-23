@@ -13,4 +13,6 @@ const companies = sqliteTable("companies", {
   glassdoorUrl: t.text("glassdoor_url"),
 });
 
+export type CompanyType = typeof companies.$inferSelect;
+
 export default companies;
