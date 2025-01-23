@@ -2,19 +2,20 @@ import { ThemedScrollView } from "@/components/ThemedScrollView";
 import useJobs from "@/hooks/useJobs";
 import useJobStatus from "@/hooks/useJobStatus";
 import { IndexPath, Input, Select, SelectItem, Text } from "@ui-kitten/components";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useFormik } from "formik";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import * as changeCase from "change-case";
 import * as Yup from "yup";
-import jobApplications from "@/db/schema/jobApplications";
+import { Button } from "@ui-kitten/components";
 import { useMemo } from "react";
+import jobApplicationLogs from "@/db/schema/jobApplicationLogs";
 
 export default function CreateJobLogScreen() {
   const jobsData = useJobs();
   const jobStatusData = useJobStatus();
   console.log("Job Applications:\n", jobsData.data)
-  console.log("Job Statuses:\n", jobStatusData.data)
+  console.log("Job StatusesjobApplicationObj:\n", jobStatusData.data)
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setFieldValue } = useFormik<{
     jobApplicationStatusId?: number,
@@ -29,21 +30,38 @@ export default function CreateJobLogScreen() {
       description: ""
     },
     onSubmit: async (data, { setSubmitting }) => {
+      try {
+        // submit our data
+        setSubmitting(true);
+        console.log(data)
+        // @ts-ignore
+        const res = await db.insert(jobApplicationLogs).values(data);
+        console.log(res);
+        setSubmitting(false);
 
+        // refetch our database
+        jobsData.refetch();
+
+        // go back to the previous screen
+        router.canGoBack() ? router.back() : null;
+      } catch (err) {
+        console.error(err);
+        Alert.alert("Incomplete Information", "Please complete all required fields to continue")
+      }
     },
     validationSchema: Yup.object().shape({
-      summary: Yup.string().required("Job summary is required"),
-      description: Yup.string().required("Job description is required"),
+      summary: Yup.string().required("Summary is required"),
+      description: Yup.string().required("Description is required"),
       jobApplicationStatusId: Yup.number().oneOf(jobStatusData.data?.map(n => n.id) ?? []),
-      jobApplicationId: Yup.number().oneOf(jobsData.data?.map(n => n.id) ?? [])
+      jobApplicationId: Yup.number().oneOf(jobsData.data?.map(n => n.job_applications.id) ?? [])
     })
   })
 
   const jobApplicationIdVal = useMemo(() => {
-    // find the company object based on the ID
-    const jobApplicationObj = jobsData.data?.find(loc => loc.id === values.jobApplicationId);
+    // find the job application object based on the ID
+    const jobApplicationObj = jobsData.data?.find(loc => loc.job_applications.id === values.jobApplicationId);
     if (jobApplicationObj == undefined) return "";
-    return jobApplicationObj?.name;
+    return jobApplicationObj?.job_applications.name + " - " + jobApplicationObj.companies.name;
   }, [values.jobApplicationId])
 
   const jobApplicationIdSelectedIndex = useMemo(
@@ -54,11 +72,30 @@ export default function CreateJobLogScreen() {
     [values.jobApplicationId])
 
   const handleJobApplicationIdOnSelect = (index: IndexPath) => {
-    // find the company object based on the index
-    const companyObj = jobsData.data?.[index.row]!;
-    setFieldValue("companyId", companyObj.id);
+    // find the job application object based on the index
+    const jobApplicationObj = jobsData.data?.[index.row]!;
+    setFieldValue("jobApplicationId", jobApplicationObj.job_applications.id);
   }
 
+  const jobApplicationStatusIdVal = useMemo(() => {
+    // find the job application object based on the ID
+    const jobApplicationStatusObj = jobStatusData.data?.find(loc => loc.id === values.jobApplicationStatusId);
+    if (jobApplicationStatusObj == undefined) return "";
+    return changeCase.capitalCase(jobApplicationStatusObj?.name);
+  }, [values.jobApplicationStatusId])
+
+  const jobApplicationStatusIdSelectedIndex = useMemo(
+    () => {
+      if (values.jobApplicationStatusId == undefined) return undefined;
+      return new IndexPath(values.jobApplicationStatusId!);
+    },
+    [values.jobApplicationStatusId])
+
+  const handleJobApplicationStatusIdOnSelect = (index: IndexPath) => {
+    // find the job application object based on the index
+    const jobApplicationStatusObj = jobStatusData.data?.[index.row]!;
+    setFieldValue("jobApplicationStatusId", jobApplicationStatusObj.id);
+  }
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
@@ -76,9 +113,15 @@ export default function CreateJobLogScreen() {
           label="Job Application"
           status={errors.jobApplicationId ? "danger" : undefined}
           caption={errors.jobApplicationId}
+          // @ts-ignore
+          selectedIndex={jobApplicationIdSelectedIndex}
+          // @ts-ignore
+          value={jobApplicationIdVal}
+          // @ts-ignore
+          onSelect={handleJobApplicationIdOnSelect}
         >
           {jobsData.data?.map(jc => (
-            <SelectItem key={jc.id} title={jc.name} />
+            <SelectItem key={jc.job_applications.id} title={jc.job_applications.name + " - " + jc.companies.name} />
           ))}
         </Select>
       </View>
@@ -87,7 +130,12 @@ export default function CreateJobLogScreen() {
           label="Status"
           status={errors.jobApplicationStatusId ? "danger" : undefined}
           caption={errors.jobApplicationStatusId}
-        // @ts-ignore
+          // @ts-ignore
+          selectedIndex={jobApplicationStatusIdSelectedIndex}
+          // @ts-ignore
+          value={jobApplicationStatusIdVal}
+          // @ts-ignore
+          onSelect={handleJobApplicationStatusIdOnSelect}
         >
           {jobStatusData.data?.map(jc => (
             <SelectItem key={jc.id} title={changeCase.capitalCase(jc.name)} />
@@ -97,6 +145,8 @@ export default function CreateJobLogScreen() {
       <View style={{ marginTop: 20 }}>
         <Input
           label="Summary"
+          multiline
+          numberOfLines={3}
           value={values.summary}
           onChangeText={handleChange("summary")}
           onBlur={handleBlur("summary")}
@@ -108,11 +158,18 @@ export default function CreateJobLogScreen() {
         <Input
           label="Description"
           value={values.description}
+          multiline
+          numberOfLines={13}
           onChangeText={handleChange("description")}
           onBlur={handleBlur("description")}
           status={errors.description ? "danger" : undefined}
           caption={errors.description}
         />
+      </View>
+      <View style={{ marginVertical: 50 }}>
+        <Button onPress={() => handleSubmit()} disabled={isSubmitting}>
+          Save
+        </Button>
       </View>
     </ThemedScrollView>
   )
