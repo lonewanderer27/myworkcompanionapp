@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { Button } from '@ui-kitten/components';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
 
 export default function TabJobsScreen() {
@@ -21,6 +20,10 @@ export default function TabJobsScreen() {
     router.push("/(app)/companies")
   }
 
+  const handleCreateJobUpdate = () => {
+    router.push("/(app)/jobLogs/create")
+  }
+
   return (
     <ThemedScrollView style={styles.container}>
       <Button size="large" onPress={handleCreateLocations} style={{ marginTop: 20 }}>
@@ -34,6 +37,9 @@ export default function TabJobsScreen() {
       </Button>
       <Button size="large" onPress={handleCreateJob} style={{ marginTop: 20 }}>
         Add Job
+      </Button>
+      <Button size="large" onPress={handleCreateJobUpdate} style={{ marginTop: 20 }}>
+        Create Job Update
       </Button>
     </ThemedScrollView>
   );

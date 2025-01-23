@@ -1,54 +1,66 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { Button, IndexPath, Input, Select, SelectItem, Text } from "@ui-kitten/components";
 import { router, Stack } from "expo-router";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { db } from "@/app/_layout";
-import companies from "@/db/schema/companies";
 import { useMemo } from "react";
 import useLocations from "@/hooks/useLocations";
 import useCompanies from "@/hooks/useCompanies";
 import useJobs from "@/hooks/useJobs";
+import jobApplications from "@/db/schema/jobApplications";
 
 export default function JobCreateScreen() {
   const jobsData = useJobs();
+  const locationsData = useLocations();
+  const companiesData = useCompanies();
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setFieldValue } = useFormik<{
     name: string,
     companyId?: number,
-    contactPersonId: number,
+    contactPersonId?: number,
     locationId?: number,
     hoursPerWeek?: number,
     allowancePerMonth?: number,
     description: string,
+    email?: string,
+    contactNo?: string,
     applicationUrl: string,
     workMode?: number
   }>({
     initialValues: {
       name: "",
       companyId: undefined,
-      contactPersonId: -1,
+      contactPersonId: undefined,
       locationId: undefined,
       hoursPerWeek: 0,
       allowancePerMonth: 0,
       description: "",
+      email: "",
+      contactNo: "",
       applicationUrl: "",
       workMode: undefined
     },
     onSubmit: async (data, { setSubmitting }) => {
-      // submit our data
-      setSubmitting(true);
-      console.log(data)
-      const res = await db.insert(companies).values(data);
-      console.log(res);
-      setSubmitting(false);
+      try {
+        // submit our data
+        setSubmitting(true);
+        console.log(data)
+        // @ts-ignore
+        const res = await db.insert(jobApplications).values(data);
+        console.log(res);
+        setSubmitting(false);
 
-      // refetch our database
-      jobsData.refetch();
+        // refetch our database
+        jobsData.refetch();
 
-      // go back to the previous screen
-      router.canGoBack() ? router.back() : null;
+        // go back to the previous screen
+        router.canGoBack() ? router.back() : null;
+      } catch (err) {
+        console.error(err);
+        Alert.alert("Incomplete Information", "Please complete all required fields to continue")
+      }
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Job role is a required field"),
@@ -56,7 +68,7 @@ export default function JobCreateScreen() {
       allowancePerMonth: Yup.number().optional(),
       description: Yup.string(),
       applicationUrl: Yup.string().url("Must be a valid URL").optional(),
-      workMode: Yup.number().min(0).max(2).optional()
+      workMode: Yup.number().min(0).max(2).optional(),
     })
   })
 
@@ -82,7 +94,6 @@ export default function JobCreateScreen() {
     setFieldValue("workMode", index.row!);
   }
 
-  const locationsData = useLocations();
   console.log("locations: ", locationsData.data);
 
   const locationIdVal = useMemo(() => {
@@ -104,8 +115,6 @@ export default function JobCreateScreen() {
     const locObj = locationsData.data?.[index.row]!;
     setFieldValue("locationId", locObj.id);
   }
-
-  const companiesData = useCompanies();
 
   const companyIdVal = useMemo(() => {
     // find the company object based on the ID
@@ -152,7 +161,7 @@ export default function JobCreateScreen() {
         <Input
           multiline
           label="Job Description"
-          numberOfLines={6}
+          numberOfLines={13}
           value={values.description}
           onChangeText={handleChange("description")}
           onBlur={handleBlur("description")}
@@ -231,6 +240,28 @@ export default function JobCreateScreen() {
           onBlur={handleBlur("allowancePerMonth")}
           status={errors.allowancePerMonth ? "danger" : undefined}
           caption={errors.allowancePerMonth}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Input
+          label="Email"
+          keyboardType="email-address"
+          value={values.email?.toString()}
+          onChangeText={handleChange("email")}
+          onBlur={handleBlur("email")}
+          status={errors.email ? "danger" : undefined}
+          caption={errors.email}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Input
+          label="Contact No"
+          keyboardType="email-address"
+          value={values.contactNo?.toString()}
+          onChangeText={handleChange("contactNo")}
+          onBlur={handleBlur("contactN")}
+          status={errors.contactNo ? "danger" : undefined}
+          caption={errors.contactNo}
         />
       </View>
       <View style={{ marginTop: 20 }}>
