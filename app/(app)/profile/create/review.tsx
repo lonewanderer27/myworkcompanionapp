@@ -5,9 +5,12 @@ import useSessionProfile from "@/hooks/useSessionProfile";
 import { Button, Text } from "@ui-kitten/components";
 import { eq } from "drizzle-orm";
 import { router } from "expo-router";
+import React from "react";
+import { TouchableOpacity, View } from "react-native";
+import * as changeCase from "change-case";
 
 export default function ReviewProfileScreen() {
-  const { data, refetch, existingSession } = useSessionProfile();
+  const { refetch, existingSession } = useSessionProfile();
 
   const handleCompleteSessionProfile = async () => {
     console.log("Completing current session profile...");
@@ -21,13 +24,35 @@ export default function ReviewProfileScreen() {
     router.push("/(app)/(tabs)/profile");
   }
 
+  console.log(existingSession && Object.values(existingSession));
+
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
-      <Text>
+      <Text category="h4" style={{ marginBottom: 20 }}>
+        Review Changes
       </Text>
-      <Button size="large" onPress={handleCompleteSessionProfile} style={{ marginTop: 20 }}>
-        Save Changes
-      </Button>
+      {existingSession?.data && Object.entries(existingSession.data).filter(os => os[1] !== "").map(([key, value]) =>
+        <View style={{ marginBottom: 17 }}>
+          <Text category="label">{changeCase.capitalCase(key)}</Text>
+          <TouchableOpacity>
+            <Text
+              style={{
+                borderColor: "gray",
+                borderWidth: 1,
+                padding: 7,
+                borderRadius: 5,
+                marginTop: 5
+              }}>
+              {value}
+            </Text>
+          </TouchableOpacity>
+
+        </View>)}
+      <View style={{ paddingBottom: 60 }}>
+        <Button size="large" onPress={handleCompleteSessionProfile}>
+          Save Changes
+        </Button>
+      </View>
     </ThemedScrollView>
   )
 }

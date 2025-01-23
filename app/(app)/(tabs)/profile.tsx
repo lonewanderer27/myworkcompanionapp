@@ -42,16 +42,20 @@ export default function TabProfileScreen() {
     router.push("/(app)/profile/create/name");
   }
 
-  const handleAddProfileName = () => {
+  const handleSetProfileName = () => {
     router.push("/(app)/profile/create/name");
   };
 
-  const handleAddProfileDesc = () => {
+  const handleSetProfileDesc = () => {
     router.push("/(app)/profile/create/description");
   }
 
-  const handleAddProfileContact = () => {
+  const handleSetProfileContact = () => {
     router.push("/(app)/profile/create/contact");
+  }
+
+  const handleReviewProfile = () => {
+    router.push("/(app)/profile/create/review");
   }
 
   return (
@@ -62,14 +66,17 @@ export default function TabProfileScreen() {
       <Button size="large" onPress={createSessionProfile} style={{ marginTop: 20 }}>
         Force create new Profile
       </Button>
-      <Button size="large" onPress={handleAddProfileName} style={{ marginTop: 20 }}>
-        Add Name
+      <Button size="large" onPress={handleSetProfileName} style={{ marginTop: 20 }}>
+        Set Name
       </Button>
-      <Button size="large" onPress={handleAddProfileDesc} style={{ marginTop: 20 }}>
-        Add Career Profile
+      <Button size="large" onPress={handleSetProfileDesc} style={{ marginTop: 20 }}>
+        Set Career Profile
       </Button>
-      <Button size="large" onPress={handleAddProfileContact} style={{ marginTop: 20 }}>
-        Add Contact
+      <Button size="large" onPress={handleSetProfileContact} style={{ marginTop: 20 }}>
+        Set Contact
+      </Button>
+      <Button size="large" onPress={handleReviewProfile} style={{ marginTop: 20 }}>
+        Review Profile
       </Button>
     </ThemedView>
   );
