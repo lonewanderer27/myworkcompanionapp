@@ -3,6 +3,7 @@ import * as t from "drizzle-orm/sqlite-core";
 import timestamps from "./timestamps";
 import jobApplicationStatuses from "./jobApplicationStatuses";
 import jobApplications from "./jobApplications";
+import { relations } from "drizzle-orm";
 
 const jobApplicationLogs = sqliteTable('job_application_logs', {
   id: t.integer().primaryKey({ autoIncrement: true }),
@@ -13,5 +14,19 @@ const jobApplicationLogs = sqliteTable('job_application_logs', {
   description: t.text().notNull(),
   me: t.integer({ mode: "boolean" }).default(false)
 });
+
+export type JobApplicationLogType = typeof jobApplicationLogs.$inferSelect;
+
+// define relationships
+export const jobApplicationLogsRelationship = relations(jobApplicationLogs, ({ one }) => ({
+  jobApplicationStatus: one(jobApplicationStatuses, {
+    fields: [jobApplicationLogs.jobApplicationStatusId],
+    references: [jobApplicationStatuses.id]
+  }),
+  jobApplicationId: one(jobApplications, {
+    fields: [jobApplicationLogs.jobApplicationId],
+    references: [jobApplications.id]
+  })
+}))
 
 export default jobApplicationLogs;

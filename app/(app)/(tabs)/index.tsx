@@ -20,6 +20,10 @@ export default function TabJobsScreen() {
     router.push("/(app)/companies")
   }
 
+  const handleViewJobApplicationLogs = () => {
+    router.push("/(app)/jobLogs");
+  }
+
   const handleCreateJobUpdate = () => {
     router.push("/(app)/jobLogs/create")
   }
@@ -37,6 +41,9 @@ export default function TabJobsScreen() {
       </Button>
       <Button size="large" onPress={handleCreateJob} style={{ marginTop: 20 }}>
         Add Job
+      </Button>
+      <Button size="large"  onPress={handleViewJobApplicationLogs} style={{ marginTop: 20 }}>
+        View Job Logs
       </Button>
       <Button size="large" onPress={handleCreateJobUpdate} style={{ marginTop: 20 }}>
         Create Job Update
