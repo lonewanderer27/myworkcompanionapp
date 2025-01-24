@@ -84,7 +84,6 @@ export default function TabJobsScreen() {
       
       return (
         <Card
-          status="basic"
           style={{ marginBottom: 10 }}
           onPress={handlePress}
         >
@@ -119,7 +118,7 @@ export default function TabJobsScreen() {
           accessoryLeft={(props) => <IconSymbol size={28} name="magnifyingglass" color="gray" />}
         />
         <List
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20, paddingBottom: 60 }}
           data={jobsData}
           renderItem={renderItem}
           scrollEnabled={false}
