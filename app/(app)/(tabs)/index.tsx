@@ -122,6 +122,7 @@ export default function TabJobsScreen() {
           style={{ marginTop: 20 }}
           data={jobsData}
           renderItem={renderItem}
+          scrollEnabled={false}
         />
       </ThemedScrollView>
     )
