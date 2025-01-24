@@ -15,7 +15,8 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'calendar': 'calendar-month',
   'bubble': 'chat-bubble-outline',
-  'person': 'person'
+  'person': 'person',
+  'magnifyingglass': 'search'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

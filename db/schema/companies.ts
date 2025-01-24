@@ -1,7 +1,7 @@
 import * as t from "drizzle-orm/sqlite-core";
 import { sqliteTable } from "drizzle-orm/sqlite-core";
 import timestamps from "./timestamps";
-import { InferModelFromColumns } from "drizzle-orm";
+import locations from "./locations";
 
 const companies = sqliteTable("companies", {
   id: t.integer().primaryKey({ autoIncrement: true }),
@@ -10,6 +10,7 @@ const companies = sqliteTable("companies", {
   fullName: t.text("full_name"),
   description: t.text(),
   website: t.text(),
+  locationId: t.integer("location_id").references(() => locations.id),
   glassdoorUrl: t.text("glassdoor_url"),
 });
 
