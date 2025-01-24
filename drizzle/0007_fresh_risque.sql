@@ -1,0 +1,1 @@
+ALTER TABLE `job_application_logs` ADD `me` integer DEFAULT false;

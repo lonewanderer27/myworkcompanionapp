@@ -1,15 +1,16 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import useJobs from "@/hooks/useJobs";
 import useJobStatus from "@/hooks/useJobStatus";
-import { IndexPath, Input, Select, SelectItem, Text } from "@ui-kitten/components";
+import { CheckBox, IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
 import { router, Stack } from "expo-router";
 import { useFormik } from "formik";
 import { Alert, View } from "react-native";
 import * as changeCase from "change-case";
 import * as Yup from "yup";
 import { Button } from "@ui-kitten/components";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import jobApplicationLogs from "@/db/schema/jobApplicationLogs";
+import { db } from "@/app/_layout";
 
 export default function CreateJobLogScreen() {
   const jobsData = useJobs();
@@ -21,19 +22,21 @@ export default function CreateJobLogScreen() {
     jobApplicationStatusId?: number,
     jobApplicationId?: number,
     summary: string,
-    description: string
+    description: string,
+    me: boolean
   }>({
     initialValues: {
       jobApplicationId: undefined,
       jobApplicationStatusId: undefined,
       summary: "",
-      description: ""
+      description: "",
+      me: false
     },
     onSubmit: async (data, { setSubmitting }) => {
       try {
         // submit our data
         setSubmitting(true);
-        console.log(data)
+        console.log("Data to submit:\n", JSON.stringify(data, null, 2))
         // @ts-ignore
         const res = await db.insert(jobApplicationLogs).values(data);
         console.log(res);
@@ -42,8 +45,30 @@ export default function CreateJobLogScreen() {
         // refetch our database
         jobsData.refetch();
 
-        // go back to the previous screen
-        router.canGoBack() ? router.back() : null;
+        // ask our user if they want to add another update
+        // or go back to the main screen
+        Alert.alert(
+          "Add Another Log",
+          "Do you want to add another log or go back to the main screen?",
+          [
+            {
+              text: "Add Another",
+              onPress: () => {
+                // reset form to initial values except job application id
+                setFieldValue("jobApplicationStatusId", undefined);
+                setFieldValue("summary", "");
+                setFieldValue("description", "");
+                setFieldValue("me", false);
+              }
+            },
+            {
+              text: "Go Back",
+              onPress: () => {
+                router.canGoBack() ? router.back() : null;
+              }
+            }
+          ]
+        );
       } catch (err) {
         console.error(err);
         Alert.alert("Incomplete Information", "Please complete all required fields to continue")
@@ -53,7 +78,8 @@ export default function CreateJobLogScreen() {
       summary: Yup.string().required("Summary is required"),
       description: Yup.string().required("Description is required"),
       jobApplicationStatusId: Yup.number().oneOf(jobStatusData.data?.map(n => n.id) ?? []),
-      jobApplicationId: Yup.number().oneOf(jobsData.data?.map(n => n.job_applications.id) ?? [])
+      jobApplicationId: Yup.number().oneOf(jobsData.data?.map(n => n.job_applications.id) ?? []),
+      me: Yup.boolean()
     })
   })
 
@@ -125,7 +151,7 @@ export default function CreateJobLogScreen() {
           ))}
         </Select>
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 20, flexDirection: "row" }}>
         <Select
           label="Status"
           status={errors.jobApplicationStatusId ? "danger" : undefined}
@@ -136,11 +162,21 @@ export default function CreateJobLogScreen() {
           value={jobApplicationStatusIdVal}
           // @ts-ignore
           onSelect={handleJobApplicationStatusIdOnSelect}
+          style={{ flex: 4 }}
         >
           {jobStatusData.data?.map(jc => (
             <SelectItem key={jc.id} title={changeCase.capitalCase(jc.name)} />
           ))}
         </Select>
+        <View style={{ paddingLeft: 10 }}>
+          <Text category="label" appearance="hint" style={{ marginBottom: 10 }}>
+            Me
+          </Text>
+          <Toggle
+            checked={values.me}
+            onChange={check => setFieldValue("me", check)}
+          />
+        </View>
       </View>
       <View style={{ marginTop: 20 }}>
         <Input

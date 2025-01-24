@@ -10,7 +10,8 @@ const jobApplicationLogs = sqliteTable('job_application_logs', {
   jobApplicationStatusId: t.integer("job_application_status_id").references(() => jobApplicationStatuses.id).notNull(),
   jobApplicationId: t.integer("job_application_id").references(() => jobApplications.id).notNull(),
   summary: t.text().notNull(),
-  description: t.text().notNull()
+  description: t.text().notNull(),
+  me: t.integer({ mode: "boolean" }).default(false)
 });
 
 export default jobApplicationLogs;
