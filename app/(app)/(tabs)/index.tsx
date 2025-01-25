@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { Button, Card, Input, List, Text } from '@ui-kitten/components';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
@@ -40,12 +40,12 @@ export default function TabJobsScreen() {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500);
   console.log("Debounced search: ", debouncedSearch);
-  const { data: jobsData } = useJobs(debouncedSearch);
+  const { data: jobsData, isFetching } = useJobs(debouncedSearch);
   console.log("Jobs:\n", jobsData?.map(j => j.job_applications.id));
 
   if (devopts) {
     return (
-      <ThemedScrollView style={styles.container}>
+      <ThemedScrollView style={{ flex: 1, padding: 20 }}>
         <Stack.Screen
           options={{
             headerShown: true,
@@ -85,7 +85,7 @@ export default function TabJobsScreen() {
       const handlePress = () => {
         router.push(`/(app)/jobs/${item.item.job_applications.id}`)
       }
-      
+
       return (
         <Card
           style={{ marginBottom: 10 }}
@@ -118,13 +118,16 @@ export default function TabJobsScreen() {
           }}
         />
         <Input
+          style={{ padding: 20 }}
           placeholder='Search'
           value={search}
           onChangeText={sch => setSearch(sch)}
-          accessoryLeft={(props) => <IconSymbol size={28} name="magnifyingglass" color="gray" />}
+          accessoryLeft={() => isFetching ?
+            <ActivityIndicator size="small" style={{ margin: 4 }} /> :
+            <IconSymbol size={28} name="magnifyingglass" color="gray" />}
         />
         <List
-          style={{ marginTop: 20, paddingBottom: 60 }}
+          style={{ paddingBottom: 20, flex: 1, flexGrow: 1 }}
           data={jobsData}
           renderItem={renderItem}
           scrollEnabled={false}
@@ -138,7 +141,6 @@ export default function TabJobsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
   createBtn: {
     bottom: 20,
