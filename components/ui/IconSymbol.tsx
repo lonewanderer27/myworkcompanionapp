@@ -16,7 +16,8 @@ const MAPPING = {
   'calendar': 'calendar-month',
   'bubble': 'chat-bubble-outline',
   'person': 'person',
-  'magnifyingglass': 'search'
+  'magnifyingglass': 'search',
+  'pesosign.square.fill': 'attach-money'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

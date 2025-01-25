@@ -15,10 +15,12 @@ const jobApplications = sqliteTable('job_applications', {
   contactNo: t.text("contact_no"),
   locationId: t.integer("location_id").references(() => locations.id).notNull(),
   hoursPerWeek: t.integer("hours_per_week"),
-  allowancePerMonth: t.real("allowance_per_month"),
+  payPerMonth: t.real("per_per_month"),
+  allowancePerDay: t.real("allowance_per_day"),
   description: t.text().notNull(),
   applicationUrl: t.text("application_url"),
-  workMode: t.text("work_mode")
+  workMode: t.text("work_mode"),
+  intern: t.integer({ mode: "boolean" }).default(false)
 })
 
 export type JobApplicationType = typeof jobApplications.$inferSelect;

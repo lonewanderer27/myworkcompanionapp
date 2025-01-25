@@ -64,6 +64,20 @@
       "when": 1737719901161,
       "tag": "0008_first_steve_rogers",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1737822964465,
+      "tag": "0009_powerful_thunderbolt_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1737823204632,
+      "tag": "0010_zippy_baron_zemo",
+      "breakpoints": true
     }
   ]
 }

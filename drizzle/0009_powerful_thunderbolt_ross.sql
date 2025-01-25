@@ -1,0 +1,1 @@
+ALTER TABLE `job_applications` ADD `intern` integer DEFAULT false;
