@@ -1,7 +1,7 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { router, Stack } from "expo-router";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { db } from "@/app/_layout";
@@ -11,28 +11,47 @@ import useCompanies from "@/hooks/useCompanies";
 export default function CompanyCreateScreen() {
   const companiesData = useCompanies();
 
-  const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting } = useFormik<{
+  const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, resetForm } = useFormik<{
     city: string,
   }>({
     initialValues: {
       city: ""
     },
     onSubmit: async (data, { setSubmitting }) => {
-      // save to db
-      setSubmitting(true);
-      console.log(data)
-      const res = await db.insert(locations).values(data);
-      console.log(res);
-      setSubmitting(false);
+      try {
+        // save to db
+        setSubmitting(true);
+        console.log(data)
+        const res = await db.insert(locations).values(data);
+        console.log(res);
+        setSubmitting(false);
 
-      // refresh our database
-      companiesData.refetch();
+        // refresh our database
+        companiesData.refetch();
 
-      // go back to the previous screen
-      router.canGoBack() ? router.back() : null;
+        Alert.alert(
+          "Add Another City",
+          "Do you want to add another location or go back to the main screen?",
+          [
+            {
+              text: "Add Another",
+              onPress: () => resetForm()
+            },
+            {
+              text: "Go Back",
+              onPress: () => {
+                router.canGoBack() ? router.back() : null;
+              }
+            }
+          ]
+        );
+      } catch (err) {
+        console.error(err)
+        Alert.alert("Incomplete Information", "Please complete all required fields to continue")
+      }
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required("Name is a required field"),
+      city: Yup.string().required("City is a required field"),
     })
   })
 

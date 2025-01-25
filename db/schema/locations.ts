@@ -5,7 +5,7 @@ import timestamps from "./timestamps";
 const locations = sqliteTable('locations', {
   id: t.integer().primaryKey({ autoIncrement: true }),
   ...timestamps,
-  city: t.text().notNull()
+  city: t.text().notNull().unique()
 });
 
 export default locations;

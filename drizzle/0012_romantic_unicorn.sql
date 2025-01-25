@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `locations_city_unique` ON `locations` (`city`);
