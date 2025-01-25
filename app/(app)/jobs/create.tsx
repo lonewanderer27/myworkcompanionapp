@@ -10,7 +10,8 @@ import useLocations from "@/hooks/useLocations";
 import useCompanies from "@/hooks/useCompanies";
 import useJobs from "@/hooks/useJobs";
 import jobApplications from "@/db/schema/jobApplications";
-import WorkMode, { workModeMap } from "@/enums/WorkMode";
+import { workModeMap } from "@/enums/WorkMode";
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 export default function JobCreateScreen() {
   const jobsData = useJobs();
@@ -29,7 +30,8 @@ export default function JobCreateScreen() {
     email?: string,
     contactNo?: string,
     applicationUrl: string,
-    workMode?: number
+    workMode?: number,
+    deadline?: Date
   }>({
     initialValues: {
       name: "",
@@ -43,7 +45,8 @@ export default function JobCreateScreen() {
       email: "",
       contactNo: "",
       applicationUrl: "",
-      workMode: undefined
+      workMode: undefined,
+      deadline: undefined
     },
     onSubmit: async (data, { setSubmitting }) => {
       try {
@@ -142,6 +145,19 @@ export default function JobCreateScreen() {
     const companyObj = companiesData.data?.[index.row]!;
     setFieldValue("companyId", companyObj.id);
   }
+
+  const handleShowDateMode = () => {
+    DateTimePickerAndroid.open({
+      value: values.deadline ?? new Date(),
+      onChange(event, date) {
+        setFieldValue("deadline", date)
+      },
+      is24Hour: true,
+      mode: "date"
+    })
+  }
+
+  console.log("Values:\n", JSON.stringify(values, null, 2));
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
@@ -291,6 +307,18 @@ export default function JobCreateScreen() {
           status={errors.applicationUrl ? "danger" : undefined}
           caption={errors.applicationUrl}
         />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Text category="label" appearance="hint">
+          Deadline
+        </Text>
+        <Button
+          appearance="outline"
+          style={{ marginTop: 5 }}
+          status="basic"
+          onPress={handleShowDateMode}>
+          {Date.parse(values.deadline+"") ? values.deadline?.toDateString() : "Tap to set Deadline"}
+        </Button>
       </View>
       <View style={{ marginVertical: 50 }}>
         <Button onPress={() => handleSubmit()} disabled={isSubmitting}>

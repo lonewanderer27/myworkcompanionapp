@@ -6,7 +6,7 @@ import { View } from "react-native";
 import React, { useMemo } from "react";
 import useLocations from "@/hooks/useLocations";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import WorkMode, { workModeMap } from "@/enums/WorkMode";
+import WorkMode from "@/enums/WorkMode";
 import * as changeCase from "change-case";
 
 export default function JobScreen() {
@@ -14,7 +14,7 @@ export default function JobScreen() {
   const { data: jobData, isLoading } = useJob(Number(jobId));
   const locations = useLocations();
 
-  const perPerMonth = useMemo(
+  const payPerMonth = useMemo(
     () => {
       if (!jobData) return false;
       return jobData![0].job_applications.payPerMonth;
@@ -77,7 +77,7 @@ export default function JobScreen() {
         <Text category="h5">
           Job Details
         </Text>
-        {jobData![0].job_applications.allowancePerDay &&
+        {allowancePerDay &&
           <View style={{ flexDirection: "row", marginTop: 10 }}>
             <IconSymbol name="pesosign.square.fill" size={24} color="gray" />
             <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
@@ -85,11 +85,11 @@ export default function JobScreen() {
                 Allowance per day
               </Text>
               <Text style={{ marginTop: 5 }}>
-                ₱ {jobData![0].job_applications.allowancePerDay}
+                ₱ {allowancePerDay}
               </Text>
             </View>
           </View>}
-        {jobData![0].job_applications.payPerMonth &&
+        {payPerMonth &&
           <View style={{ flexDirection: "row", marginTop: 10 }}>
             <IconSymbol name="pesosign.square.fill" size={24} color="gray" />
             <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
@@ -97,7 +97,7 @@ export default function JobScreen() {
                 Pay per month
               </Text>
               <Text style={{ marginTop: 5 }}>
-                ₱ {jobData![0].job_applications.payPerMonth}
+                ₱ {payPerMonth}
               </Text>
             </View>
           </View>}

@@ -21,6 +21,7 @@ const jobApplications = sqliteTable('job_applications', {
   applicationUrl: t.text("application_url"),
   workMode: t.text("work_mode"),
   intern: t.integer({ mode: "boolean" }).default(false),
+  deadline: t.text("deadline")
 })
 
 export type JobApplicationType = typeof jobApplications.$inferSelect;
