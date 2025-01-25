@@ -49,8 +49,8 @@ export default function JobScreen() {
     try {
       switch (Number(jobData![0].job_applications.workMode)) {
         case 0: return changeCase.capitalCase(WorkMode.HYBRID);
-        case 1: return changeCase.capitalCase(WorkMode.ONSITE);
-        case 2: return changeCase.capitalCase(WorkMode.REMOTE);
+        case 1: return changeCase.capitalCase(WorkMode.REMOTE);
+        case 2: return changeCase.capitalCase(WorkMode.ONSITE);
       }
     } catch {
       return changeCase.capitalCase(jobData![0].job_applications.workMode + "")

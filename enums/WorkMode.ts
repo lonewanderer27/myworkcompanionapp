@@ -5,9 +5,9 @@ enum WorkMode {
 }
 
 export const workModeMap = {
-  1: WorkMode.HYBRID,
-  2: WorkMode.REMOTE,
-  3: WorkMode.ONSITE
+  0: WorkMode.HYBRID,
+  1: WorkMode.REMOTE,
+  2: WorkMode.ONSITE
 }
 
 export default WorkMode;
