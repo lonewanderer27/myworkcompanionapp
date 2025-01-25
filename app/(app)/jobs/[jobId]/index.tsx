@@ -65,7 +65,7 @@ export default function JobScreen() {
         options={{ headerTitle: "", headerShadowVisible: false }}
       />
       <View style={{ padding: 20 }}>
-        <Text category="h3" style={{ marginBottom: 20 }}>
+        <Text category="h4" style={{ marginBottom: 20 }}>
           {jobData![0].job_applications.name}
         </Text>
         <Text>
@@ -85,7 +85,7 @@ export default function JobScreen() {
                 Allowance per day
               </Text>
               <Text style={{ marginTop: 5 }}>
-                {jobData![0].job_applications.allowancePerDay}
+                ₱ {jobData![0].job_applications.allowancePerDay}
               </Text>
             </View>
           </View>}
@@ -97,7 +97,7 @@ export default function JobScreen() {
                 Pay per month
               </Text>
               <Text style={{ marginTop: 5 }}>
-                {jobData![0].job_applications.payPerMonth}
+                ₱ {jobData![0].job_applications.payPerMonth}
               </Text>
             </View>
           </View>}
