@@ -5,6 +5,7 @@ import { ThemedScrollView } from '@/components/ThemedScrollView';
 import { useState } from 'react';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import useJobs from '@/hooks/useJobs';
+import { useDebounce } from "use-debounce";
 
 export default function TabJobsScreen() {
   const handleCreateCompany = () => {
@@ -36,8 +37,11 @@ export default function TabJobsScreen() {
     setDevOpts(val => !val);
   }
 
-  const { data: jobsData } = useJobs();
-  console.log("Jobs:\n", JSON.stringify(jobsData, null, 2))
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
+  console.log("Debounced search: ", debouncedSearch);
+  const { data: jobsData } = useJobs(debouncedSearch);
+  console.log("Jobs:\n", jobsData?.map(j => j.job_applications.id));
 
   if (devopts) {
     return (
@@ -115,6 +119,8 @@ export default function TabJobsScreen() {
         />
         <Input
           placeholder='Search'
+          value={search}
+          onChangeText={sch => setSearch(sch)}
           accessoryLeft={(props) => <IconSymbol size={28} name="magnifyingglass" color="gray" />}
         />
         <List
@@ -122,6 +128,7 @@ export default function TabJobsScreen() {
           data={jobsData}
           renderItem={renderItem}
           scrollEnabled={false}
+          extraData={debouncedSearch}
         />
       </ThemedScrollView>
     )
