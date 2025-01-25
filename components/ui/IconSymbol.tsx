@@ -17,7 +17,8 @@ const MAPPING = {
   'bubble': 'chat-bubble-outline',
   'person': 'person',
   'magnifyingglass': 'search',
-  'pesosign.square.fill': 'attach-money'
+  'pesosign.square.fill': 'attach-money',
+  'briefcase.fill': 'cases'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

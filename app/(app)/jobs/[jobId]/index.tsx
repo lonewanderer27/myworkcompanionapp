@@ -1,11 +1,13 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Button, Divider, Text } from "@ui-kitten/components";
 import useJob from "@/hooks/useJob";
 import { View } from "react-native";
 import React, { useMemo } from "react";
 import useLocations from "@/hooks/useLocations";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import WorkMode, { workModeMap } from "@/enums/WorkMode";
+import * as changeCase from "change-case";
 
 export default function JobScreen() {
   const { jobId } = useLocalSearchParams();
@@ -16,6 +18,13 @@ export default function JobScreen() {
     () => {
       if (!jobData) return false;
       return jobData![0].job_applications.payPerMonth;
+    },
+    [jobData])
+
+  const allowancePerDay = useMemo(
+    () => {
+      if (!jobData) return false;
+      return jobData![0].job_applications.allowancePerDay;
     },
     [jobData])
 
@@ -30,9 +39,22 @@ export default function JobScreen() {
     return locations.data.find(loc => loc.id === jobData[0].companies.locationId);
   }, [jobData, locations.data])
 
+  const workLocation = useMemo(() => {
+    if (!jobData || !locations.data) return null;
+    return locations.data.find(loc => loc.id === jobData[0].job_applications.locationId);
+  }, [jobData, locations.data])
+
   const workMode = useMemo(() => {
     if (!jobData) return null;
-    return jobData![0].job_applications.workMode;
+    try {
+      switch (Number(jobData![0].job_applications.workMode)) {
+        case 0: return changeCase.capitalCase(WorkMode.HYBRID);
+        case 1: return changeCase.capitalCase(WorkMode.ONSITE);
+        case 2: return changeCase.capitalCase(WorkMode.REMOTE);
+      }
+    } catch {
+      return changeCase.capitalCase(jobData![0].job_applications.workMode + "")
+    }
   }, [jobData])
 
   if (isLoading) return null;
@@ -55,19 +77,39 @@ export default function JobScreen() {
         <Text category="h5">
           Job Details
         </Text>
-        {jobData && (jobData![0].job_applications.allowancePerDay ||
-          jobData![0].job_applications.payPerMonth
-        ) &&
+        {jobData![0].job_applications.allowancePerDay &&
           <View style={{ flexDirection: "row", marginTop: 10 }}>
             <IconSymbol name="pesosign.square.fill" size={24} color="gray" />
-            <View style={{ flex: 1, marginTop: 3 }}>
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
               <Text style={{ fontWeight: "bold" }}>
-                {jobData![0].job_applications.intern ? "Allowance per day" : "Pay per month"}
+                Allowance per day
               </Text>
               <Text style={{ marginTop: 5 }}>
-                {jobData![0].job_applications.intern ?
-                  (jobData![0].job_applications.allowancePerDay)?.toString() :
-                  (jobData![0].job_applications.payPerMonth)?.toString()}
+                {jobData![0].job_applications.allowancePerDay}
+              </Text>
+            </View>
+          </View>}
+        {jobData![0].job_applications.payPerMonth &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="pesosign.square.fill" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Pay per month
+              </Text>
+              <Text style={{ marginTop: 5 }}>
+                {jobData![0].job_applications.payPerMonth}
+              </Text>
+            </View>
+          </View>}
+        {workMode &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="briefcase.fill" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Work Mode
+              </Text>
+              <Text style={{ marginTop: 5 }}>
+                {workMode}
               </Text>
             </View>
           </View>}
@@ -85,13 +127,13 @@ export default function JobScreen() {
       }
       <Divider />
       {
-        perPerMonth && <>
+        workLocation && <>
           <View style={{ padding: 20 }}>
             <Text category="h5">
-              Allowance
+              Location
             </Text>
             <Text style={{ marginTop: 10 }}>
-              PHP {jobData![0].job_applications.payPerMonth!}
+              {workLocation.city}
             </Text>
           </View>
           <Divider />

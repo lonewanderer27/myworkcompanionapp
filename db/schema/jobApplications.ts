@@ -20,7 +20,7 @@ const jobApplications = sqliteTable('job_applications', {
   description: t.text().notNull(),
   applicationUrl: t.text("application_url"),
   workMode: t.text("work_mode"),
-  intern: t.integer({ mode: "boolean" }).default(false)
+  intern: t.integer({ mode: "boolean" }).default(false),
 })
 
 export type JobApplicationType = typeof jobApplications.$inferSelect;

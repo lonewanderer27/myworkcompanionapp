@@ -10,6 +10,7 @@ import useLocations from "@/hooks/useLocations";
 import useCompanies from "@/hooks/useCompanies";
 import useJobs from "@/hooks/useJobs";
 import jobApplications from "@/db/schema/jobApplications";
+import WorkMode, { workModeMap } from "@/enums/WorkMode";
 
 export default function JobCreateScreen() {
   const jobsData = useJobs();
@@ -22,7 +23,8 @@ export default function JobCreateScreen() {
     contactPersonId?: number,
     locationId?: number,
     hoursPerWeek?: number,
-    allowancePerMonth?: number,
+    payPerMonth?: number,
+    allowancePerDay?: number,
     description: string,
     email?: string,
     contactNo?: string,
@@ -35,7 +37,8 @@ export default function JobCreateScreen() {
       contactPersonId: undefined,
       locationId: undefined,
       hoursPerWeek: 0,
-      allowancePerMonth: 0,
+      payPerMonth: 0,
+      allowancePerDay: 0,
       description: "",
       email: "",
       contactNo: "",
@@ -48,7 +51,10 @@ export default function JobCreateScreen() {
         setSubmitting(true);
         console.log(data)
         // @ts-ignore
-        const res = await db.insert(jobApplications).values(data);
+        let res = await db.insert(jobApplications).values({
+          ...data,
+          workMode: workModeMap[data.workMode! as keyof typeof workModeMap]
+        });
         console.log(res);
         setSubmitting(false);
 
@@ -65,7 +71,8 @@ export default function JobCreateScreen() {
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Job role is a required field"),
       hoursPerWeek: Yup.number().optional(),
-      allowancePerMonth: Yup.number().optional(),
+      payPerMonth: Yup.number().optional(),
+      allowancePerDay: Yup.number().optional(),
       description: Yup.string(),
       applicationUrl: Yup.string().url("Must be a valid URL").optional(),
       workMode: Yup.number().min(0).max(2).optional(),
@@ -233,13 +240,24 @@ export default function JobCreateScreen() {
       </View>
       <View style={{ marginTop: 20 }}>
         <Input
-          label="Allowance per month"
+          label="Pay per month"
           keyboardType="numeric"
-          value={values.allowancePerMonth?.toString()}
-          onChangeText={handleChange("allowancePerMonth")}
-          onBlur={handleBlur("allowancePerMonth")}
-          status={errors.allowancePerMonth ? "danger" : undefined}
-          caption={errors.allowancePerMonth}
+          value={values.payPerMonth?.toString()}
+          onChangeText={handleChange("payPerMonth")}
+          onBlur={handleBlur("payPerMonth")}
+          status={errors.payPerMonth ? "danger" : undefined}
+          caption={errors.payPerMonth}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Input
+          label="Allowance per day"
+          keyboardType="numeric"
+          value={values.allowancePerDay?.toString()}
+          onChangeText={handleChange("allowancePerDay")}
+          onBlur={handleBlur("allowancePerDay")}
+          status={errors.allowancePerDay ? "danger" : undefined}
+          caption={errors.allowancePerDay}
         />
       </View>
       <View style={{ marginTop: 20 }}>
