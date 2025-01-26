@@ -1,17 +1,19 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Button, Divider, Text } from "@ui-kitten/components";
+import { Button, Card, Divider, Text } from "@ui-kitten/components";
 import useJob from "@/hooks/useJob";
-import { View } from "react-native";
+import { Linking, ScrollView, View } from "react-native";
 import React, { useMemo } from "react";
 import useLocations from "@/hooks/useLocations";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import WorkMode from "@/enums/WorkMode";
 import * as changeCase from "change-case";
+import useJobLogs from "@/hooks/useJobLogs";
 
 export default function JobScreen() {
   const { jobId } = useLocalSearchParams();
   const { data: jobData, isLoading } = useJob(Number(jobId));
+  const { data: jobLogsData } = useJobLogs(Number(jobId));
   const locations = useLocations();
 
   const handleEdit = () => {
@@ -65,6 +67,20 @@ export default function JobScreen() {
     if (!jobData) return null;
     return jobData![0].job_applications.deadline;
   }, [jobData])
+
+  const glassdoorUrl = useMemo(() => {
+    if (!jobData) return null;
+    return jobData![0].companies.glassdoorUrl;
+  }, [jobData])
+
+  const companyUrl = useMemo(() => {
+    if (!jobData) return null;
+    return jobData![0].companies.website;
+  }, [jobData])
+
+  const handleOpenUrl = (url: string) => {
+    Linking.openURL(url);
+  }
 
   if (isLoading) return null;
 
@@ -136,17 +152,36 @@ export default function JobScreen() {
           </View>}
       </View>
       <Divider />
-      {
-        hasDescription && <View style={{ padding: 20 }}>
+      {jobLogsData && jobLogsData.length > 0 && <>
+        <View style={{ padding: 20 }}>
           <Text category="h5">
-            Full Job Description
+            Update Logs
           </Text>
-          <Text style={{ marginTop: 10 }}>
-            {jobData![0].job_applications.description}
-          </Text>
+          <ScrollView horizontal style={{ marginTop: 20 }}>
+            {jobLogsData?.map(jl => (
+              <Card style={{ maxWidth: 275, marginRight: 10 }}>
+                <Text numberOfLines={5}>
+                  {String(jl.job_application_logs.description).replace("\n\n", " ").replace("\n", " ")}
+                </Text>
+              </Card>
+            ))}
+          </ScrollView>
         </View>
+        <Divider />
+      </>}
+      {
+        hasDescription && <>
+          <View style={{ padding: 20 }}>
+            <Text category="h5">
+              Full Job Description
+            </Text>
+            <Text style={{ marginTop: 10 }}>
+              {jobData![0].job_applications.description}
+            </Text>
+          </View>
+          <Divider />
+        </>
       }
-      <Divider />
       {
         workLocation && <>
           <View style={{ padding: 20, }}>
@@ -165,6 +200,43 @@ export default function JobScreen() {
           <Divider />
         </>
       }
+      <View style={{ padding: 20 }}>
+        <Text category="h5">
+          Employer
+        </Text>
+        <Text>
+          Check out few details about {jobData![0].companies.name}
+        </Text>
+        {companyUrl &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="link" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Website
+              </Text>
+              <Text
+                style={{ textDecorationLine: "underline", marginTop: 5 }}
+                onPress={() => handleOpenUrl(companyUrl)}>
+                {companyUrl}
+              </Text>
+            </View>
+          </View>}
+        {glassdoorUrl &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="link" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Glassdoor
+              </Text>
+              <Text
+                style={{ textDecorationLine: "underline", marginTop: 5 }}
+                onPress={() => handleOpenUrl(glassdoorUrl)}>
+                {glassdoorUrl}
+              </Text>
+            </View>
+          </View>}
+      </View>
+      <Divider />
       <View style={{ padding: 20 }}>
         <Button size="large" onPress={handleEdit}>
           Edit Job Details

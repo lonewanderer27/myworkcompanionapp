@@ -21,7 +21,8 @@ const MAPPING = {
   'briefcase.fill': 'cases',
   'slider.horizontal.3' : 'filter-list-alt',
   'clock' : 'access-time',
-  'map' : 'location-pin'
+  'map' : 'location-pin',
+  'link' : 'link'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
