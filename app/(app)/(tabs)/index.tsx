@@ -2,10 +2,11 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { Button, Card, Input, List, Text } from '@ui-kitten/components';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import useJobs from '@/hooks/useJobs';
 import { useDebounce } from "use-debounce";
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
 export default function TabJobsScreen() {
   const handleCreateCompany = () => {
@@ -119,7 +120,7 @@ export default function TabJobsScreen() {
         />
         <Input
           style={{ padding: 20 }}
-          placeholder='Search'
+          placeholder='Job title, keywords, company or location'
           value={search}
           onChangeText={sch => setSearch(sch)}
           accessoryLeft={() => isFetching ?

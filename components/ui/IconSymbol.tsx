@@ -18,7 +18,9 @@ const MAPPING = {
   'person': 'person',
   'magnifyingglass': 'search',
   'pesosign.square.fill': 'attach-money',
-  'briefcase.fill': 'cases'
+  'briefcase.fill': 'cases',
+  'slider.horizontal.3' : 'filter-list-alt',
+  'clock' : 'access-time'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
