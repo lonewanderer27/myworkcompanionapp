@@ -178,20 +178,21 @@ export default function JobScreen() {
             {jobLogsData?.map((jl, index) => (
               <Card key={index} style={{ maxWidth: 275, marginRight: 10 }}>
                 <Text appearance="hint">
-                  {jl.job_application_logs.me == false ? "Re: " : "You: "}
+                  {jl.job_application_logs.me ? "You: " : "Re: "}
                   {jl.job_application_logs.summary + "\n"}
                 </Text>
-                <Text numberOfLines={4}>
+                <Text numberOfLines={5}>
                   {String(jl.job_application_logs.description).replace("\n\n", " ").replace("\n", "")}
                 </Text>
               </Card>
             ))}
-            <Card style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
-              <Text numberOfLines={2}>
-                View
-                More
-              </Text>
-            </Card>
+            {jobLogsData.length >= 3 &&
+              <Card style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
+                <Text numberOfLines={2}>
+                  View
+                  More
+                </Text>
+              </Card>}
           </ScrollView>
         </View>
         <Divider />
@@ -242,9 +243,10 @@ export default function JobScreen() {
                 Website
               </Text>
               <Text
-                style={{ textDecorationLine: "underline", marginTop: 5 }}
+                status="primary"
+                style={{ marginTop: 5 }}
                 onPress={() => handleOpenUrl(companyUrl)}>
-                {companyUrl}
+                {companyUrl.replace("https://", "")}
               </Text>
             </View>
           </View>}
@@ -256,9 +258,10 @@ export default function JobScreen() {
                 Glassdoor
               </Text>
               <Text
-                style={{ textDecorationLine: "underline", marginTop: 5 }}
+                status="primary"
+                style={{ marginTop: 5 }}
                 onPress={() => handleOpenUrl(glassdoorUrl)}>
-                {glassdoorUrl}
+                {glassdoorUrl.replace("https://", "")}
               </Text>
             </View>
           </View>}
