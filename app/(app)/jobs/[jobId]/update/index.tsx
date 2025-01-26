@@ -54,13 +54,14 @@ export default function JobUpdateScreen() {
           : (jobData![0].job_applications.workMode! + "" === "1" || jobData![0].job_applications.workMode === WorkMode.ONSITE) ? 1
             : (jobData![0].job_applications.workMode! + "" === "2" || jobData![0].job_applications.workMode === WorkMode.REMOTE) ? 2
               : undefined,
-      deadline: new Date(jobData![0].job_applications.deadline + "") ?? undefined
+      deadline: jobData![0].job_applications.deadline ? new Date(jobData![0].job_applications.workMode!) : undefined
     },
+    enableReinitialize: true,
     onSubmit: async (data, { setSubmitting }) => {
       try {
         // submit our data
         setSubmitting(true);
-        console.log(data)
+        console.log("To be updated data:\n", JSON.stringify(data, null, 2))
         // @ts-ignore
         let res = await db.insert(jobApplications).values({
           ...data,
@@ -167,6 +168,8 @@ export default function JobUpdateScreen() {
   }
 
   console.log("Values:\n", JSON.stringify(values, null, 2));
+
+  if (isLoading || locationsData.isLoading || companiesData.isLoading) return null;
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
