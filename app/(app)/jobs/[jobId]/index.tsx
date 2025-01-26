@@ -87,7 +87,7 @@ export default function JobScreen() {
 
   const currentJobStatus = useMemo(() => {
     if (!jobLogsData || !jobStatuses) return null;
-    return jobStatuses?.find(js => js.id === jobLogsData!.at(-1)?.job_application_logs.jobApplicationStatusId)
+    return jobStatuses?.find(js => js.id === jobLogsData!.at(0)?.job_application_logs.jobApplicationStatusId)
   }, [jobData,])
 
   if (isLoading) return null;
@@ -245,7 +245,8 @@ export default function JobScreen() {
               <Text
                 status="primary"
                 style={{ marginTop: 5 }}
-                onPress={() => handleOpenUrl(companyUrl)}>
+                onPress={() => handleOpenUrl(companyUrl)}
+                numberOfLines={1}>
                 {companyUrl.replace("https://", "")}
               </Text>
             </View>
@@ -260,7 +261,8 @@ export default function JobScreen() {
               <Text
                 status="primary"
                 style={{ marginTop: 5 }}
-                onPress={() => handleOpenUrl(glassdoorUrl)}>
+                onPress={() => handleOpenUrl(glassdoorUrl)}
+                numberOfLines={1}>
                 {glassdoorUrl.replace("https://", "")}
               </Text>
             </View>
