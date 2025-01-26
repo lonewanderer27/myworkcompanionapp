@@ -4,8 +4,8 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { ThemedScrollView } from "@/components/ThemedScrollView";
 import useCompany from "@/hooks/useCompany";
 import useJobLog from "@/hooks/useJobLog";
-import { Divider, Text } from "@ui-kitten/components";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Divider, Text, Button } from "@ui-kitten/components";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import * as changeCase from "change-case";
 import { useMemo } from "react";
@@ -22,6 +22,8 @@ export default function JobLogScreen() {
     if (!jobLogData) return null;
     return jobLogData[0].job_application_statuses;
   }, [jobLogData])
+
+  const handleEdit = () => router.push(`/(app)/jobLogs/${jobLogData![0].job_application_logs.id}/update`)
 
   if (!jobLogData || !companyData) return null;
 
@@ -41,24 +43,6 @@ export default function JobLogScreen() {
         <Text>
           {companyData![0].companies.name} | {companyData![0].locations.city}
         </Text>
-      </View>
-      <Divider />
-      <View style={{ padding: 20 }}>
-        <Text category="h5">
-          Log Details
-        </Text>
-        {currentJobStatus &&
-          <View style={{ flexDirection: "row", marginTop: 10 }}>
-            <IconSymbol name="star" size={24} color="gray" />
-            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
-              <Text style={{ fontWeight: "bold" }}>
-                Status
-              </Text>
-              <Text style={{ marginTop: 5 }}>
-                {changeCase.capitalCase(currentJobStatus.name)}
-              </Text>
-            </View>
-          </View>}
       </View>
       <Divider />
       <View style={{ padding: 20 }}>
@@ -90,6 +74,29 @@ export default function JobLogScreen() {
         </Text>
       </View>
       <Divider />
+      <View style={{ padding: 20 }}>
+        <Text category="h5">
+          Log Details
+        </Text>
+        {currentJobStatus &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="star" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Status
+              </Text>
+              <Text style={{ marginTop: 5 }}>
+                {changeCase.capitalCase(currentJobStatus.name)}
+              </Text>
+            </View>
+          </View>}
+      </View>
+      <Divider />
+      <View style={{ padding: 20 }}>
+        <Button size="large" onPress={handleEdit}>
+          Edit Job Log
+        </Button>
+      </View>
     </ThemedScrollView >
   )
 }
