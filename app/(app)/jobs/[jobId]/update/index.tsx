@@ -13,10 +13,11 @@ import jobApplications from "@/db/schema/jobApplications";
 import WorkMode, { workModeMap } from "@/enums/WorkMode";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import useJob from "@/hooks/useJob";
+import { eq } from "drizzle-orm";
 
 export default function JobUpdateScreen() {
   const { jobId } = useLocalSearchParams();
-  const { data: jobData, isLoading } = useJob(Number(jobId));
+  const { data: jobData, isLoading, refetch } = useJob(Number(jobId));
   console.log("Job:\n", JSON.stringify(jobData, null, 2));
   const jobsData = useJobs();
   const locationsData = useLocations();
@@ -63,16 +64,16 @@ export default function JobUpdateScreen() {
         setSubmitting(true);
         console.log("To be updated data:\n", JSON.stringify(data, null, 2))
         // @ts-ignore
-        let res = await db.insert(jobApplications).values({
+        let res = await db.update(jobApplications).set({
           ...data,
           workMode: workModeMap[data.workMode! as keyof typeof workModeMap],
           deadline: data.deadline?.toISOString()
-        });
+        }).where(eq(jobApplications.id, Number(jobId)));
         console.log(res);
         setSubmitting(false);
 
         // refetch our database
-        jobsData.refetch();
+        refetch();
 
         // go back to the previous screen
         router.canGoBack() ? router.back() : null;
