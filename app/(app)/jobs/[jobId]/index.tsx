@@ -11,6 +11,10 @@ import * as changeCase from "change-case";
 import useJobLogs from "@/hooks/useJobLogs";
 import Chip from "@/components/Chip";
 import useJobStatus from "@/hooks/useJobStatus";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 export default function JobScreen() {
   const { jobId } = useLocalSearchParams();
@@ -160,6 +164,7 @@ export default function JobScreen() {
               </Text>
               <Text style={{ marginTop: 5 }}>
                 {new Date(deadline).toDateString()}
+                {" "}({dayjs().to(dayjs(deadline))})
               </Text>
             </View>
           </View>}
