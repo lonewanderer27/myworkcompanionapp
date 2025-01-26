@@ -9,11 +9,14 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import WorkMode from "@/enums/WorkMode";
 import * as changeCase from "change-case";
 import useJobLogs from "@/hooks/useJobLogs";
+import Chip from "@/components/Chip";
+import useJobStatus from "@/hooks/useJobStatus";
 
 export default function JobScreen() {
   const { jobId } = useLocalSearchParams();
   const { data: jobData, isLoading } = useJob(Number(jobId));
-  const { data: jobLogsData } = useJobLogs(Number(jobId));
+  const { data: jobLogsData } = useJobLogs(Number(jobId), 3);
+  const { data: jobStatuses } = useJobStatus();
   const locations = useLocations();
 
   const handleEdit = () => {
@@ -81,6 +84,11 @@ export default function JobScreen() {
   const handleOpenUrl = (url: string) => {
     Linking.openURL(url);
   }
+
+  const currentJobStatus = useMemo(() => {
+    if (!jobLogsData || !jobStatuses) return null;
+    return jobStatuses?.find(js => js.id === jobLogsData!.at(-1)?.job_application_logs.jobApplicationStatusId)
+  }, [jobData,])
 
   if (isLoading) return null;
 
@@ -154,17 +162,36 @@ export default function JobScreen() {
       <Divider />
       {jobLogsData && jobLogsData.length > 0 && <>
         <View style={{ padding: 20 }}>
-          <Text category="h5">
-            Update Logs
-          </Text>
-          <ScrollView horizontal style={{ marginTop: 20 }}>
-            {jobLogsData?.map(jl => (
-              <Card style={{ maxWidth: 275, marginRight: 10 }}>
-                <Text numberOfLines={5}>
-                  {String(jl.job_application_logs.description).replace("\n\n", " ").replace("\n", " ")}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: -5 }}>
+            <Text category="h5">
+              Status Logs
+            </Text>
+            <View style={{ marginTop: -5 }}>
+              <Chip>
+                <Text>
+                  Latest: {changeCase.capitalCase(currentJobStatus?.name + "")}
+                </Text>
+              </Chip>
+            </View>
+          </View>
+          <ScrollView horizontal style={{ marginTop: 15 }}>
+            {jobLogsData?.map((jl, index) => (
+              <Card key={index} style={{ maxWidth: 275, marginRight: 10 }}>
+                <Text appearance="hint">
+                  {jl.job_application_logs.me == false ? "Re: " : "You: "}
+                  {jl.job_application_logs.summary + "\n"}
+                </Text>
+                <Text numberOfLines={4}>
+                  {String(jl.job_application_logs.description).replace("\n\n", " ").replace("\n", "")}
                 </Text>
               </Card>
             ))}
+            <Card style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
+              <Text numberOfLines={2}>
+                View
+                More
+              </Text>
+            </Card>
           </ScrollView>
         </View>
         <Divider />
