@@ -1,5 +1,5 @@
 import { ThemedScrollView } from "@/components/ThemedScrollView";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Button, Divider, Text } from "@ui-kitten/components";
 import useJob from "@/hooks/useJob";
 import { View } from "react-native";
@@ -13,6 +13,10 @@ export default function JobScreen() {
   const { jobId } = useLocalSearchParams();
   const { data: jobData, isLoading } = useJob(Number(jobId));
   const locations = useLocations();
+
+  const handleEdit = () => {
+    router.push(`/(app)/jobs/${jobId}/update`)
+  }
 
   const payPerMonth = useMemo(
     () => {
@@ -157,7 +161,7 @@ export default function JobScreen() {
         </>
       }
       <View style={{ padding: 20 }}>
-        <Button size="large">
+        <Button size="large" onPress={handleEdit}>
           Edit Job Details
         </Button>
       </View>
