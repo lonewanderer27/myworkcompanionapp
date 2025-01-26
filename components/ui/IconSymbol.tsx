@@ -22,7 +22,8 @@ const MAPPING = {
   'slider.horizontal.3' : 'filter-list-alt',
   'clock' : 'access-time',
   'map' : 'location-pin',
-  'link' : 'link'
+  'link' : 'link',
+  'star' : 'star-outline'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
