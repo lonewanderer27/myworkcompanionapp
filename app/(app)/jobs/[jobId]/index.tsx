@@ -149,13 +149,18 @@ export default function JobScreen() {
       <Divider />
       {
         workLocation && <>
-          <View style={{ padding: 20 }}>
+          <View style={{ padding: 20, }}>
             <Text category="h5">
               Location
             </Text>
-            <Text style={{ marginTop: 10 }}>
-              {workLocation.city}
-            </Text>
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <IconSymbol name="map" size={24} color="gray" />
+              <View style={{ marginTop: 2, marginLeft: 5 }}>
+                <Text>
+                  {workLocation.city}
+                </Text>
+              </View>
+            </View>
           </View>
           <Divider />
         </>

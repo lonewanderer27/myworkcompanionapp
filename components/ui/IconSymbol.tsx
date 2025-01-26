@@ -20,7 +20,8 @@ const MAPPING = {
   'pesosign.square.fill': 'attach-money',
   'briefcase.fill': 'cases',
   'slider.horizontal.3' : 'filter-list-alt',
-  'clock' : 'access-time'
+  'clock' : 'access-time',
+  'map' : 'location-pin'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
