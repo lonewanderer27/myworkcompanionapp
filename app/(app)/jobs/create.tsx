@@ -56,7 +56,8 @@ export default function JobCreateScreen() {
         // @ts-ignore
         let res = await db.insert(jobApplications).values({
           ...data,
-          workMode: workModeMap[data.workMode! as keyof typeof workModeMap]
+          workMode: workModeMap[data.workMode! as keyof typeof workModeMap],
+          deadline: data.deadline?.toISOString()
         });
         console.log(res);
         setSubmitting(false);

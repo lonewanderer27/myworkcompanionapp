@@ -57,6 +57,11 @@ export default function JobScreen() {
     }
   }, [jobData])
 
+  const deadline = useMemo(() => {
+    if (!jobData) return null;
+    return jobData![0].job_applications.deadline;
+  }, [jobData])
+
   if (isLoading) return null;
 
   return (
@@ -110,6 +115,18 @@ export default function JobScreen() {
               </Text>
               <Text style={{ marginTop: 5 }}>
                 {workMode}
+              </Text>
+            </View>
+          </View>}
+        {deadline &&
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <IconSymbol name="clock" size={24} color="gray" />
+            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold" }}>
+                Deadline
+              </Text>
+              <Text style={{ marginTop: 5 }}>
+                {new Date(deadline).toDateString()}
               </Text>
             </View>
           </View>}
