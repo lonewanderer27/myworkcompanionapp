@@ -85,6 +85,11 @@ export default function JobScreen() {
     Linking.openURL(url);
   }
 
+  const handleJobLog = (id: number) => {
+    console.log("go to job log: ", id);
+    router.push(`/(app)/jobLogs/${id}`)
+  }
+
   const currentJobStatus = useMemo(() => {
     if (!jobLogsData || !jobStatuses) return null;
     return jobStatuses?.find(js => js.id === jobLogsData!.at(0)?.job_application_logs.jobApplicationStatusId)
@@ -176,7 +181,10 @@ export default function JobScreen() {
           </View>
           <ScrollView horizontal style={{ marginTop: 15 }}>
             {jobLogsData?.map((jl, index) => (
-              <Card key={index} style={{ maxWidth: 275, marginRight: 10 }}>
+              <Card
+                key={index} 
+                style={{ maxWidth: 275, marginRight: 10 }} 
+                onPress={() => handleJobLog(jl.job_application_logs.id)}>
                 <Text appearance="hint">
                   {jl.job_application_logs.me ? "You: " : "Re: "}
                   {jl.job_application_logs.summary + "\n"}
