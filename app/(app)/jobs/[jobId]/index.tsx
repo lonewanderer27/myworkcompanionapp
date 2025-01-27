@@ -94,6 +94,11 @@ export default function JobScreen() {
     router.push(`/(app)/jobLogs/${id}`)
   }
 
+  const handleJobLogs = () => {
+    console.log("go to job logs list of: ", jobId)
+    router.push(`/(app)/jobs/${jobId}/jobLogs`);
+  }
+
   const currentJobStatus = useMemo(() => {
     if (!jobLogsData || !jobStatuses) return null;
     return jobStatuses?.find(js => js.id === jobLogsData!.at(0)?.job_application_logs.jobApplicationStatusId)
@@ -200,7 +205,9 @@ export default function JobScreen() {
               </Card>
             ))}
             {jobLogsData.length >= 3 &&
-              <Card style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
+              <Card 
+                onPress={handleJobLogs}
+                style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
                 <Text numberOfLines={2}>
                   View
                   More

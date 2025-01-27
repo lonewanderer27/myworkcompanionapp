@@ -8,4 +8,6 @@ const locations = sqliteTable('locations', {
   city: t.text().notNull().unique()
 });
 
+export type LocationType = typeof locations.$inferSelect;
+
 export default locations;

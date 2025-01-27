@@ -8,4 +8,6 @@ const jobApplicationStatuses = sqliteTable("job_application_statuses", {
   name: t.text().notNull(),
 });
 
+export type JobApplicationStatusType = typeof jobApplicationStatuses.$inferSelect;
+
 export default jobApplicationStatuses;
