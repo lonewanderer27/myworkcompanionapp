@@ -13,6 +13,8 @@ import { JobApplicationLogType } from '@/db/schema/jobApplicationLogs'
 import * as changeCase from "change-case";
 import useJobStatus from '@/hooks/useJobStatus'
 import { JobApplicationStatusType } from '@/db/schema/jobApplicationStatuses'
+import { useSetAtom } from 'jotai'
+import { screenAtom } from '@/atoms/screen'
 
 dayjs.extend(relativeTime)
 
@@ -121,6 +123,8 @@ const JobLogsOfJobScreen = () => {
   const { data: jobLogStatuses } = useJobStatus();
   const locations = useLocations();
 
+  const setScreen = useSetAtom(screenAtom);
+
   const [collapsed, setCollapsed] = useState(true);
   useEffect(() => {
     if (jobLogs && jobLogs.length > 3) {
@@ -136,7 +140,11 @@ const JobLogsOfJobScreen = () => {
     return locations.data.find(loc => loc.id === jobData[0].companies.locationId);
   }, [jobData, locations.data])
 
-  const handleAddLog = () => router.push(`/(app)/jobLogs/create`)
+  const handleAddLog = () => {
+    // @ts-ignore
+    setScreen({ fromScreen: "jobLogsOfJobScreen", id: jobId })
+    router.push(`/(app)/jobLogs/create`)
+  }
 
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1 }}>

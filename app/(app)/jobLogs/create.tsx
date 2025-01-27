@@ -8,15 +8,19 @@ import { Alert, View } from "react-native";
 import * as changeCase from "change-case";
 import * as Yup from "yup";
 import { Button } from "@ui-kitten/components";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import jobApplicationLogs from "@/db/schema/jobApplicationLogs";
 import { db } from "@/app/_layout";
+import { useAtomValue } from "jotai";
+import { screenAtom } from "@/atoms/screen";
 
 export default function CreateJobLogScreen() {
+  const screen = useAtomValue(screenAtom);
   const jobsData = useJobs();
   const jobStatusData = useJobStatus();
   console.log("Job Applications:\n", jobsData.data)
   console.log("Job StatusesjobApplicationObj:\n", jobStatusData.data)
+  console.log("Screen: ", JSON.stringify(screen, null, 2))
 
   const { handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, setFieldValue } = useFormik<{
     jobApplicationStatusId?: number,
@@ -26,7 +30,7 @@ export default function CreateJobLogScreen() {
     me: boolean
   }>({
     initialValues: {
-      jobApplicationId: undefined,
+      jobApplicationId: (screen && screen.id) ? Number(screen.id) : undefined,
       jobApplicationStatusId: undefined,
       summary: "",
       description: "",
@@ -145,6 +149,7 @@ export default function CreateJobLogScreen() {
           value={jobApplicationIdVal}
           // @ts-ignore
           onSelect={handleJobApplicationIdOnSelect}
+          disabled={(screen && screen.id) ? true : false}
         >
           {jobsData.data?.map(jc => (
             <SelectItem key={jc.job_applications.id} title={jc.job_applications.name + " - " + jc.companies.name} />
