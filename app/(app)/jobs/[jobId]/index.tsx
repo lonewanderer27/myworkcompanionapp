@@ -3,7 +3,7 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Button, Card, Divider, Text } from "@ui-kitten/components";
 import useJob from "@/hooks/useJob";
 import { Linking, ScrollView, View } from "react-native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import useLocations from "@/hooks/useLocations";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import WorkMode from "@/enums/WorkMode";
@@ -21,6 +21,8 @@ export default function JobScreen() {
   const { data: jobData, isLoading } = useJob(Number(jobId));
   const { data: jobLogsData } = useJobLogs(Number(jobId), 3);
   const { data: jobStatuses } = useJobStatus();
+  const [descCollapse, setDescCollapse] = useState(true);
+  const toggleDescCollapse = () => setDescCollapse(prev => !prev);
   const locations = useLocations();
 
   const handleEdit = () => {
@@ -192,8 +194,8 @@ export default function JobScreen() {
           <ScrollView horizontal style={{ marginTop: 15 }}>
             {jobLogsData?.map((jl, index) => (
               <Card
-                key={index} 
-                style={{ maxWidth: 275, marginRight: 10 }} 
+                key={index}
+                style={{ maxWidth: 275, marginRight: 10 }}
                 onPress={() => handleJobLog(jl.job_application_logs.id)}>
                 <Text appearance="hint">
                   {jl.job_application_logs.me ? "You: " : "Re: "}
@@ -205,7 +207,7 @@ export default function JobScreen() {
               </Card>
             ))}
             {jobLogsData.length >= 3 &&
-              <Card 
+              <Card
                 onPress={handleJobLogs}
                 style={{ maxWidth: 275, marginRight: 10, justifyContent: "center" }}>
                 <Text numberOfLines={2}>
@@ -223,7 +225,10 @@ export default function JobScreen() {
             <Text category="h5">
               Full Job Description
             </Text>
-            <Text style={{ marginTop: 10 }}>
+            <Text
+              style={{ marginTop: 10 }}
+              numberOfLines={descCollapse ? 7 : undefined}
+              onPress={toggleDescCollapse}>
               {jobData![0].job_applications.description}
             </Text>
           </View>
