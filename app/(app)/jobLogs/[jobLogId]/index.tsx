@@ -33,10 +33,17 @@ export default function JobLogScreen() {
         options={{ headerTitle: "", headerShadowVisible: false }}
       />
       <View style={{ padding: 20 }}>
-        <Text category="h4" style={{ marginBottom: 20 }}>
-          {jobLogData[0].job_application_logs.me ? "You: " : "Re: "}
+        <Text category="h4" style={{ marginBottom: 10 }}>
           {jobLogData![0].job_application_logs.summary}
         </Text>
+        {currentJobStatus && <View style={{ flexDirection: "row", marginBottom: 10 }}>
+          <IconSymbol name="star" size={24} color="gray" />
+          <View style={{ flex: 1, marginTop: 2, marginLeft: 5 }}>
+            <Text>
+              {changeCase.capitalCase(currentJobStatus.name)}
+            </Text>
+          </View>
+        </View>}
         <Text>
           {jobLogData![0].job_applications.name}
         </Text>
@@ -61,7 +68,7 @@ export default function JobLogScreen() {
           <View>
             <Text category="h6">
               {jobLogData[0].job_application_logs.me ?
-                "Adriane James Puzon" : "Recruiter"}
+                "You" : "Recruiter"}
             </Text>
             <Text>
               {new Date(jobLogData[0].job_application_logs.updatedAt).toDateString()}
@@ -72,24 +79,6 @@ export default function JobLogScreen() {
         <Text style={{ marginTop: 20 }}>
           {jobLogData[0].job_application_logs.description}
         </Text>
-      </View>
-      <Divider />
-      <View style={{ padding: 20 }}>
-        <Text category="h5">
-          Log Details
-        </Text>
-        {currentJobStatus &&
-          <View style={{ flexDirection: "row", marginTop: 10 }}>
-            <IconSymbol name="star" size={24} color="gray" />
-            <View style={{ flex: 1, marginTop: 3, marginLeft: 10 }}>
-              <Text style={{ fontWeight: "bold" }}>
-                Status
-              </Text>
-              <Text style={{ marginTop: 5 }}>
-                {changeCase.capitalCase(currentJobStatus.name)}
-              </Text>
-            </View>
-          </View>}
       </View>
       <Divider />
       <View style={{ padding: 20 }}>
