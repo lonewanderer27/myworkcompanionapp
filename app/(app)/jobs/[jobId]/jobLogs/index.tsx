@@ -2,7 +2,7 @@ import { ThemedScrollView } from '@/components/ThemedScrollView'
 import useJob from '@/hooks/useJob'
 import useJobLogs from '@/hooks/useJobLogs'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Divider, Text } from '@ui-kitten/components'
 import { Pressable, TouchableOpacity, View } from 'react-native'
 import useLocations from '@/hooks/useLocations'
@@ -121,6 +121,16 @@ const JobLogsOfJobScreen = () => {
   const { data: jobLogStatuses } = useJobStatus();
   const locations = useLocations();
 
+  const [collapsed, setCollapsed] = useState(true);
+  useEffect(() => {
+    if (jobLogs && jobLogs.length > 3) {
+      setCollapsed(true);
+    } else {
+      setCollapsed(false)
+    }
+  }, [jobLogs])
+  const toggleCollapse = () => setCollapsed(prev => !prev);
+
   const companyLocation = useMemo(() => {
     if (!jobData || !locations.data) return null;
     return locations.data.find(loc => loc.id === jobData[0].companies.locationId);
@@ -142,13 +152,26 @@ const JobLogsOfJobScreen = () => {
         </Text>
       </View>
       <Divider />
-      {jobData && jobLogStatuses && jobLogs && jobLogs?.map((jl, index) =>
-        <JobLogItem
-          key={index}
-          jobLog={jl.job_application_logs}
-          jobStatus={jobLogStatuses!.find(jls =>
-            jl.job_application_logs.jobApplicationStatusId === jls.id)!}
-        />)}
+      {jobLogs && <View>
+        {collapsed &&
+          <Button appearance='outline' status="basic" onPress={toggleCollapse}>
+            <Text>View {jobLogs?.length - 3} More</Text>
+          </Button>}
+      </View>}
+      {jobData && jobLogStatuses && jobLogs &&
+        jobLogs?.filter((fl, index) => {
+          // if collapse is true and
+          // index
+          console.log("collapse: ", collapsed, " index: ", index)
+          if (collapsed && index < 3) return false;
+          return true;
+        }).map((jl, index) =>
+          <JobLogItem
+            key={index}
+            jobLog={jl.job_application_logs}
+            jobStatus={jobLogStatuses!.find(jls =>
+              jl.job_application_logs.jobApplicationStatusId === jls.id)!}
+          />)}
       <View style={{ padding: 20 }}>
         <Button size="large" onPress={handleAddLog}>
           Add Log
