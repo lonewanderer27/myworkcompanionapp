@@ -127,6 +127,8 @@ export default function CreateJobLogScreen() {
     setFieldValue("jobApplicationStatusId", jobApplicationStatusObj.id);
   }
 
+  if (!jobsData.data || !jobStatusData.data) return null;
+
   return (
     <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
       <Stack.Screen
