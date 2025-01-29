@@ -5,8 +5,8 @@ import { Alert, View } from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { db } from "@/app/_layout";
-import institutions from "@/db/schema/institutions";
 import useSkillCategories from "@/hooks/useSkillCategories";
+import skillCategories from "@/db/schema/skillCategories";
 
 export default function CreateSkillCategoryScreen() {
   const { refetch } = useSkillCategories();
@@ -18,12 +18,11 @@ export default function CreateSkillCategoryScreen() {
       name: "",
     },
     onSubmit: async (data, { setSubmitting }) => {
+      console.log("Data to submit:\n", JSON.stringify(data, null, 2))
+
       setSubmitting(true);
       try {
-        console.log("Data to submit:\n", JSON.stringify(data, null, 2))
-        const res = await db.insert(institutions).values(data)
-        console.log(res);
-
+        await db.insert(skillCategories).values(data)
         await refetch();
 
         // ask our user if they want to add another update
@@ -54,8 +53,7 @@ export default function CreateSkillCategoryScreen() {
       setSubmitting(false);
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required("Name is a required field"),
-      fullName: Yup.string().required("Description is a required field")
+      name: Yup.string().required("Name is a required field")
     })
   })
 
@@ -71,7 +69,7 @@ export default function CreateSkillCategoryScreen() {
       </Text>
       <View style={{ marginTop: 20 }}>
         <Input
-          label="Institution Name"
+          label="Name"
           value={values.name}
           onChangeText={handleChange("name")}
           onBlur={handleBlur("name")}
