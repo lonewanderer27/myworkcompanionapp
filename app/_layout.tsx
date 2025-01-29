@@ -81,7 +81,7 @@ export default function RootLayout() {
     if (loaded && success) {
       SplashScreen.hideAsync();
 
-      (async()=>{
+      (async () => {
         // @ts-ignore
         const res = await db.query.companies.findMany();
         console.log("Companies: ", res);
@@ -94,8 +94,9 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "gray" }}>
+      <QueryClientProvider client={queryClient}>
+
         <ApplicationProvider {...eva} theme={colorScheme === "dark" ? eva.dark : eva.light}>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack>
@@ -105,7 +106,7 @@ export default function RootLayout() {
             <StatusBar style="auto" />
           </ThemeProvider>
         </ApplicationProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }

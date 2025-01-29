@@ -6,7 +6,7 @@ import skillCategories from "./skillCategories";
 const skills = sqliteTable('skills', {
   id: t.integer().primaryKey({ autoIncrement: true }),
   ...timestamps,
-  name: t.text().notNull(),
+  name: t.text().notNull().unique(),
   categoryId: t.integer("category_id").references(()=>skillCategories.id)
 });
 

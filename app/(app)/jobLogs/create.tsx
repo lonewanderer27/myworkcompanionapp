@@ -1,18 +1,18 @@
-import { ThemedScrollView } from "@/components/ThemedScrollView";
 import useJobs from "@/hooks/useJobs";
 import useJobStatus from "@/hooks/useJobStatus";
-import { CheckBox, IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
+import { IndexPath, Input, Select, SelectItem, Text, Toggle } from "@ui-kitten/components";
 import { router, Stack } from "expo-router";
 import { useFormik } from "formik";
 import { Alert, View } from "react-native";
 import * as changeCase from "change-case";
 import * as Yup from "yup";
 import { Button } from "@ui-kitten/components";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import jobApplicationLogs from "@/db/schema/jobApplicationLogs";
 import { db } from "@/app/_layout";
 import { useAtomValue } from "jotai";
 import { screenAtom } from "@/atoms/screen";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function CreateJobLogScreen() {
   const screen = useAtomValue(screenAtom);
@@ -130,7 +130,7 @@ export default function CreateJobLogScreen() {
   if (!jobsData.data || !jobStatusData.data) return null;
 
   return (
-    <ThemedScrollView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
+    <ThemedView style={{ flexGrow: 1, flex: 1, padding: 20 }}>
       <Stack.Screen
         options={{
           title: "",
@@ -214,6 +214,6 @@ export default function CreateJobLogScreen() {
           Save
         </Button>
       </View>
-    </ThemedScrollView>
+    </ThemedView>
   )
 }

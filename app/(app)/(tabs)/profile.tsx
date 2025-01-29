@@ -91,6 +91,10 @@ export default function TabProfileScreen() {
     router.push("/(app)/skills/category/create")
   }
 
+  const handleAddSkill = () => {
+    router.push("/(app)/skills/create");
+  }
+
   if (devopts) {
     return (
       <ThemedView style={styles.container}>
@@ -117,6 +121,9 @@ export default function TabProfileScreen() {
         </Button>
         <Button size="large" onPress={handleAddSkillCategory} style={{ marginTop: 20 }}>
           Add Skill Category
+        </Button>
+        <Button size="large" onPress={handleAddSkill} style={{ marginTop: 20 }}>
+          Add Skill
         </Button>
         <Button size="large" onPress={toggleDevOpts} style={{ marginTop: 20 }}>
           Disable Dev Tools
