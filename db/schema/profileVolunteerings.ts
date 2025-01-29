@@ -3,6 +3,7 @@ import * as t from "drizzle-orm/sqlite-core";
 import timestamps from "./timestamps";
 import { sql } from "drizzle-orm";
 import companies from "./companies";
+import profiles from "./profiles";
 
 const profileVolunteerings = sqliteTable("profile_volunteerings", {
   id: t.integer().primaryKey({ autoIncrement: true }),
@@ -20,6 +21,10 @@ const profileVolunteerings = sqliteTable("profile_volunteerings", {
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),
+  profileId: t
+    .integer("profile_id")
+    .references(() => profiles.id)
+    .notNull(),
 });
 
 export default profileVolunteerings;
