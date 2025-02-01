@@ -1,12 +1,15 @@
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
-import { Button, Tab, TabBar, TabView } from '@ui-kitten/components';
-import { router } from 'expo-router';
+import { Button, Text } from '@ui-kitten/components';
+import { router, Stack } from 'expo-router';
 import { db } from '@/app/_layout';
 import profileSessions from '@/db/schema/profileSessions';
 import DEFAULT_SESSION_PROFILE from '@/constants/SessionProfile';
 import useSessionProfile from '@/hooks/useSessionProfile';
 import { useState } from 'react';
+import { ThemedScrollView } from '@/components/ThemedScrollView';
+import React from 'react';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export default function TabProfileScreen() {
   const [devopts, setDevOpts] = useState(true);
@@ -97,8 +100,24 @@ export default function TabProfileScreen() {
 
   if (devopts) {
     return (
-      <ThemedView style={styles.container}>
-        <Button size="large" onPress={handleAddSessionProfile} style={{ marginTop: 20 }}>
+      <ThemedScrollView style={{
+        flex: 1,
+        padding: 20
+      }}>
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            headerTitle: "Dev Options",
+            headerRight: () => (
+              <TouchableOpacity
+                style={{ marginRight: 15 }}
+                onPress={toggleDevOpts}>
+                <Text>Hide</Text>
+              </TouchableOpacity>
+            )
+          }}
+        />
+        <Button size="large" onPress={handleAddSessionProfile}>
           Update Profile
         </Button>
         <Button size="large" onPress={createSessionProfile} style={{ marginTop: 20 }}>
@@ -125,17 +144,27 @@ export default function TabProfileScreen() {
         <Button size="large" onPress={handleAddSkill} style={{ marginTop: 20 }}>
           Add Skill
         </Button>
-        <Button size="large" onPress={toggleDevOpts} style={{ marginTop: 20 }}>
-          Disable Dev Tools
-        </Button>
-      </ThemedView>
+      </ThemedScrollView>
     );
   } else {
     return (
       <ThemedView style={styles.container}>
-        <Button size="large" onPress={toggleDevOpts} style={{ marginTop: 20 }}>
-          Enable Dev Tools
-        </Button>
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            headerTitle: "Profile",
+            headerRight: () => (
+              <>
+                <TouchableOpacity style={{ marginRight: 15 }} onPress={toggleDevOpts}>
+                  <Text>{devopts ? "Hide" : "Show Dev"}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ marginRight: 10 }}>
+                  <IconSymbol size={28} name="gear" color="gray" />
+                </TouchableOpacity>
+              </>
+            )
+          }}
+        />
       </ThemedView>
     )
   }

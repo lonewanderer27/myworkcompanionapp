@@ -1,10 +1,10 @@
 import { router, Stack } from "expo-router";
 import { Button, ButtonGroup, Divider, Input, List, ListItem, Text } from "@ui-kitten/components";
 import { useFormik } from "formik";
-import { useMemo, useRef, useState } from "react";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { useCallback, useMemo, useRef, useState } from "react";
+import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetView } from "@gorhom/bottom-sheet";
 import { ThemedView } from "@/components/ThemedView";
-import { Alert, View } from "react-native";
+import { Alert, View, ViewProps } from "react-native";
 import useSkillCategories from "@/hooks/useSkillCategories";
 import { SkillCategoryType } from "@/db/schema/skillCategories";
 import * as Yup from "yup";

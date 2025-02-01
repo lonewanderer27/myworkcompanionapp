@@ -23,7 +23,8 @@ const MAPPING = {
   'clock' : 'access-time',
   'map' : 'location-pin',
   'link' : 'link',
-  'star' : 'star-outline'
+  'star' : 'star-outline',
+  'gear' : 'settings'
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
