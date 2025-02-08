@@ -112,10 +112,7 @@ export default function CompanyCreateScreen() {
       </View>
       <View style={{ marginTop: 50 }}>
         <Button onPress={() => handleSubmit()} disabled={isSubmitting}>
-          <>
-            {isSubmitting && <ActivityIndicator />}
-            Next
-          </>
+          Add
         </Button>
       </View>
     </ThemedScrollView>
