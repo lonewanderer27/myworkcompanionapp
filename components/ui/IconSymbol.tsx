@@ -24,7 +24,9 @@ const MAPPING = {
   'map' : 'location-pin',
   'link' : 'link',
   'star' : 'star-outline',
-  'gear' : 'settings'
+  'gear' : 'settings',
+  'plus.square.on.square' : 'add-a-photo'
+
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

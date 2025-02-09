@@ -12,6 +12,8 @@ const companies = sqliteTable("companies", {
   website: t.text(),
   locationId: t.integer("location_id").references(() => locations.id),
   glassdoorUrl: t.text("glassdoor_url"),
+  avatar: t.text('avatar'),
+  avatarUrl: t.text("avatar_url")
 });
 
 export type CompanyType = typeof companies.$inferSelect;

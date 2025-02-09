@@ -14,6 +14,8 @@ import m0009 from './0009_powerful_thunderbolt_ross.sql';
 import m0010 from './0010_zippy_baron_zemo.sql';
 import m0011 from './0011_late_rhodey.sql';
 import m0012 from './0012_romantic_unicorn.sql';
+import m0013 from './0013_watery_network.sql';
+import m0014 from './0014_cynical_archangel.sql';
 
   export default {
     journal,
@@ -30,7 +32,9 @@ m0008,
 m0009,
 m0010,
 m0011,
-m0012
+m0012,
+m0013,
+m0014
     }
   }
   

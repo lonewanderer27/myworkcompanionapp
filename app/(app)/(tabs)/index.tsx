@@ -1,6 +1,6 @@
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { Button, Card, Input, List, Text } from '@ui-kitten/components';
+import { Avatar, Button, Card, Icon, Input, List, Text } from '@ui-kitten/components';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
 import { useRef, useState } from 'react';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -92,15 +92,20 @@ export default function TabJobsScreen() {
           style={{ marginBottom: 10 }}
           onPress={handlePress}
         >
-          <Text category='h6' style={{ marginVertical: 5 }}>
-            {item.item.job_applications.name}
-          </Text>
-          <Text>
-            {item.item.companies.name}
-          </Text>
-          <Text>
-            {item.item.locations.city}
-          </Text>
+          <View>
+            {item.item.companies.avatar && <Avatar source={{ uri: item.item.companies.avatar }} />}
+            <View>
+              <Text category='h6' style={{ marginVertical: 5 }}>
+                {item.item.job_applications.name}
+              </Text>
+              <Text>
+                {item.item.companies.name}
+              </Text>
+              <Text>
+                {item.item.locations.city}
+              </Text>
+            </View>
+          </View>
         </Card>
       )
     }
